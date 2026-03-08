@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAS CAFE — Contact & Socials</title>
+    <link rel="icon" href="./DAS.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        /* ── Variables ───────────────────────────────────────────── */
+        :root {
+            --bg:         #0d0c0b;
+            --surface:    #131110;
+            --card:       #1c1916;
+            --gold:       #c8a96e;
+            --gold-lt:    #e5c78e;
+            --cream:      #f5edd6;
+            --muted:      #8a7f72;
+            --border:     rgba(200,169,110,.18);
+            --border-hv:  rgba(200,169,110,.40);
+            --radius:     20px;
+            --radius-sm:  12px;
+            --transition: .28s cubic-bezier(.4,0,.2,1);
+            --ff-serif:   'Playfair Display', serif;
+            --ff-sans:    'Inter', system-ui, sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--ff-sans);
+            background-color: var(--bg);
+            color: var(--cream);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background: url('./10026.jpg') center / cover no-repeat;
+            opacity: .055;
+            filter: sepia(.7) saturate(.5) brightness(.55);
+            pointer-events: none;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 99px; }
+        /* ── Header / Nav ─────────────────────────────────────────── */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(9,8,7,.95);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px; height: 68px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 4px 30px rgba(0,0,0,.5);
+        }
+        header::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(200,169,110,.4), transparent);
+        }
+        .header-logo {
+            display: flex; align-items: center; gap: 12px; text-decoration: none;
+        }
+        .header-logo img {
+            width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+            border: 1.5px solid rgba(200,169,110,.4);
+            animation: spinSlow 20s linear infinite;
+            filter: drop-shadow(0 0 8px rgba(200,169,110,.45));
+        }
+        @keyframes spinSlow { to { transform: rotate(360deg); } }
+        .logo-name {
+            font-family: var(--ff-serif); font-size: 1.3rem; font-weight: 700;
+            color: var(--gold); letter-spacing: .06em;
+        }
+        .logo-name span { color: var(--cream); font-weight: 300; }
+        .nav-links-right { display: flex; gap: 10px; }
+        .nav-link {
+            font-size: .8rem; font-weight: 500; color: var(--muted);
+            text-decoration: none; letter-spacing: .04em;
+            padding: 8px 18px; border-radius: 999px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .nav-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,169,110,.07); }
+        .nav-link.active { background: var(--gold); color: #1a1714; border-color: var(--gold); font-weight: 600; }
+        /* ── Page wrapper ─────────────────────────────────────────── */
+        .page {
+            position: relative; z-index: 1;
+            max-width: 900px; margin: 0 auto;
+            padding: 60px 28px 80px;
+        }
+        /* ── Hero banner ──────────────────────────────────────────── */
+        .page-hero {
+            text-align: center; margin-bottom: 64px;
+            animation: fadeUp .8s ease .1s both;
+        }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: .72rem; font-weight: 600; letter-spacing: .2em;
+            text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+        }
+        .section-tag::before, .section-tag::after {
+            content: ''; display: block;
+            width: 20px; height: 1.5px; background: var(--gold); border-radius: 2px;
+        }
+        .page-title {
+            font-family: var(--ff-serif);
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700; color: var(--cream);
+            letter-spacing: -.02em; line-height: 1.1;
+            margin-bottom: 14px;
+        }
+        .page-title .gold { color: var(--gold); }
+        .page-sub {
+            font-size: 1rem; color: var(--muted);
+            line-height: 1.7; max-width: 460px; margin: 0 auto;
+        }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+        /* ── Social Media Section ─────────────────────────────────── */
+        .section-group { margin-bottom: 52px; animation: fadeUp .8s ease .25s both; }
+        .group-title {
+            font-size: .7rem; font-weight: 600; letter-spacing: .2em;
+            text-transform: uppercase; color: var(--gold);
+            margin-bottom: 24px; display: flex; align-items: center; gap: 12px;
+        }
+        .group-title::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+        .social-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .social-card {
+            display: flex; align-items: center; gap: 18px;
+            padding: 22px 24px;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            text-decoration: none; color: var(--cream);
+            transition: transform var(--transition), box-shadow var(--transition),
+                        border-color var(--transition), background var(--transition);
+        }
+        .social-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 55px rgba(0,0,0,.45), 0 0 0 1px rgba(200,169,110,.3);
+            border-color: var(--border-hv);
+            background: #221f1a;
+        }
+        .social-icon-wrap {
+            width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            transition: transform var(--transition);
+        }
+        .social-card:hover .social-icon-wrap { transform: scale(1.1) rotate(-4deg); }
+        .social-icon-wrap.fb  { background: rgba(66,103,178,.18); border: 1px solid rgba(66,103,178,.3); }
+        .social-icon-wrap.ig  { background: rgba(200,55,130,.15); border: 1px solid rgba(200,55,130,.25); }
+        .social-card-info-name {
+            font-weight: 600; font-size: .95rem; margin-bottom: 3px;
+        }
+        .social-card-info-handle {
+            font-size: .75rem; color: var(--muted);
+        }
+        .social-card-arrow {
+            margin-left: auto; flex-shrink: 0; color: var(--muted);
+            font-size: .8rem; opacity: 0;
+            transition: opacity var(--transition), color var(--transition);
+        }
+        .social-card:hover .social-card-arrow { opacity: 1; color: var(--gold); }
+        /* ── Map Section ──────────────────────────────────────────── */
+        .map-section { animation: fadeUp .8s ease .4s both; }
+        .map-wrap {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden;
+            box-shadow: 0 12px 50px rgba(0,0,0,.4);
+        }
+        .map-wrap iframe {
+            width: 100%; height: 420px; display: block;
+            border: none; filter: invert(.9) hue-rotate(178deg) brightness(.9) contrast(.85);
+        }
+        .map-caption {
+            padding: 18px 22px; display: flex; align-items: center; gap: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .map-caption-icon {
+            width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+            background: rgba(200,169,110,.1); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+        }
+        .map-caption-text { flex: 1; }
+        .map-caption-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+        .map-caption-val { font-size: .88rem; font-weight: 500; }
+        .map-caption-badge {
+            font-size: .68rem; font-weight: 600; color: #1a1714;
+            background: var(--gold); padding: 4px 12px; border-radius: 999px; flex-shrink: 0;
+        }
+        /* ── Footer ───────────────────────────────────────────────── */
+        .page-footer {
+            position: relative; z-index: 1;
+            text-align: center; padding: 28px;
+            border-top: 1px solid var(--border);
+            color: var(--muted); font-size: .78rem;
+        }
+    </style>
+</head>
+<body>
+<!-- ── Header ───────────────────────────────────────────────── -->
+<header>
+    <a href="./index.html" class="header-logo">
+        <img src="./DAS.png" alt="DAS CAFE badge" />
+        <span class="logo-name">DAS <span>CAFE</span></span>
+    </a>
+    <nav class="nav-links-right">
+        <a href="./index.html#menu" class="nav-link">Menu</a>
+        <a href="./menu.html" class="nav-link">Order</a>
+        <a href="./contact.html" class="nav-link active">Contact</a>
+    </nav>
+</header>
+<!-- ── Main Content ─────────────────────────────────────────── -->
+<div class="page">
+    <!-- Hero -->
+    <div class="page-hero">
+        <div class="section-tag">Get in Touch</div>
+        <h1 class="page-title">Find Us &amp; <span class="gold">Follow Along</span></h1>
+        <p class="page-sub">Stay connected with DAS CAFE on social media and drop by at our Vega location anytime.</p>
+    </div>
+    <!-- Socials -->
+    <div class="section-group">
+        <div class="group-title">Social Media</div>
+        <div class="social-grid">
+            <a href="https://www.facebook.com/profile.php?id=61583324061160&sk=about"
+               target="_blank" rel="noopener" class="social-card">
+                <div class="social-icon-wrap fb">
+                    <img src="facebook.png" alt="Facebook" style="width:28px;height:28px;object-fit:contain;" onerror="this.parentElement.innerHTML='𝒇'" />
+                </div>
+                <div class="social-card-info">
+                    <div class="social-card-info-name">Facebook</div>
+                    <div class="social-card-info-handle">DAS CAFE Official</div>
+                </div>
+                <span class="social-card-arrow">↗</span>
+            </a>
+            <a href="https://www.instagram.com/dascafe12?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+               target="_blank" rel="noopener" class="social-card">
+                <div class="social-icon-wrap ig">
+                    <img src="instagram.png" alt="Instagram" style="width:28px;height:28px;object-fit:contain;" onerror="this.parentElement.innerHTML='📸'" />
+                </div>
+                <div class="social-card-info">
+                    <div class="social-card-info-name">Instagram</div>
+                    <div class="social-card-info-handle">@dascafe12</div>
+                </div>
+                <span class="social-card-arrow">↗</span>
+            </a>
+        </div>
+    </div>
+    <!-- Map -->
+    <div class="map-section">
+        <div class="group-title">Our Location</div>
+        <div class="map-wrap">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3695.684109617324!2d73.39914190000003!3d22.138016700000012!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fe18361ecceb5%3A0xf00c0ca2089ceba6!2sDAS%20CAFE!5e0!3m2!1sen!2sin!4v1770455750523!5m2!1sen!2sin"
+                allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="DAS CAFE Location Map">
+            </iframe>
+            <div class="map-caption">
+                <div class="map-caption-icon">📍</div>
+                <div class="map-caption-text">
+                    <div class="map-caption-label">Address</div>
+                    <div class="map-caption-val">DAS CAFE, Vega — South India</div>
+                </div>
+                <div class="map-caption-badge">Open Now</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="page-footer">
+    © 2025 DAS CAFE by NIRAMAY · Made with ☕ in South India
+</footer>
+</body>
+</html>

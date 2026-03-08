@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAS CAFE — Menu & Order</title>
+    <link rel="icon" href="./DAS.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ── Variables ────────────────────────────────────── */
+        :root {
+            --bg:         #0d0c0b;
+            --surface:    #131110;
+            --card:       #1c1916;
+            --card-hv:    #241f1a;
+            --gold:       #c8a96e;
+            --gold-lt:    #e5c78e;
+            --gold-dk:    #9e7c45;
+            --cream:      #f5edd6;
+            --muted:      #8a7f72;
+            --border:     rgba(200,169,110,.18);
+            --border-hv:  rgba(200,169,110,.42);
+            --radius:     16px;
+            --radius-sm:  10px;
+            --transition: .28s cubic-bezier(.4,0,.2,1);
+            --ff-serif:   'Playfair Display', serif;
+            --ff-sans:    'Inter', system-ui, sans-serif;
+            --header-h:   60px;
+            --tab-h:      64px;
+        }
+        /* ── Reset ───────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        /* ── Body ────────────────────────────────────────────── */
+        body {
+            font-family: var(--ff-sans);
+            background-color: var(--bg);
+            color: var(--cream);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background: url('./10026.jpg') center / cover no-repeat;
+            opacity: .05;
+            filter: sepia(.7) saturate(.5) brightness(.55);
+            pointer-events: none;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--card); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 99px; }
+        /* ── Header ───────────────────────────────────────────── */
+        header {
+            position: relative; z-index: 100;
+            background: rgba(9,8,7,.96);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            height: var(--header-h);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,.5);
+        }
+        header::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(200,169,110,.4), transparent);
+        }
+        .header-logo {
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
+        }
+        .header-logo img {
+            width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+            border: 1.5px solid rgba(200,169,110,.4);
+            /* animation: spinSlow 20s linear infinite; */
+        }
+        @keyframes spinSlow { to { transform: rotate(360deg); } }
+        .logo-name {
+            font-family: var(--ff-serif); font-size: 1.2rem; font-weight: 700;
+            color: var(--gold); letter-spacing: .06em;
+        }
+        .logo-name span { color: var(--cream); font-weight: 300; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        #datetime {
+            font-size: .7rem; color: var(--muted); letter-spacing: .02em;
+            display: none; /* hidden on small screens, shown on desktop */
+        }
+        .back-link {
+            font-size: .75rem; font-weight: 500; color: var(--muted);
+            text-decoration: none; letter-spacing: .04em;
+            padding: 7px 14px; border-radius: 999px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .back-link:hover { color: var(--gold); border-color: var(--gold); background: rgba(200,169,110,.07); }
+        /* ── Desktop: side-by-side layout ───────────────────────────── */
+        .main-container {
+            position: relative; z-index: 1;
+            display: flex; flex: 1; gap: 16px; padding: 16px;
+            overflow: hidden; min-height: 0;
+        }
+        /* ── Left: Menu Panel ────────────────────────────────────────── */
+        .menu-panel {
+            flex: 2;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 8px 40px rgba(0,0,0,.4);
+            position: relative;
+        }
+        .menu-panel-title {
+            font-family: var(--ff-serif);
+            font-size: 1.3rem; font-weight: 700; color: var(--cream); margin-bottom: 4px;
+        }
+        .menu-panel-sub {
+            font-size: .72rem; color: var(--muted); letter-spacing: .06em;
+            text-transform: uppercase; margin-bottom: 16px;
+            padding-bottom: 16px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .menu-panel-sub::before {
+            content: ''; display: inline-block; width: 14px; height: 1.5px;
+            background: var(--gold); border-radius: 2px;
+        }
+        /* Category headings */
+        .category-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: .68rem; font-weight: 600; letter-spacing: .16em;
+            text-transform: uppercase; color: var(--gold);
+            margin: 22px 0 10px;
+            padding-bottom: 8px; border-bottom: 1px solid var(--border);
+        }
+        /* Menu grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px; margin-bottom: 4px;
+        }
+        /* Individual menu item */
+        .menu-item {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 10px; text-align: center;
+            cursor: pointer;
+            transition: transform var(--transition), box-shadow var(--transition),
+                        border-color var(--transition), background var(--transition);
+            position: relative; overflow: hidden;
+            /* Large touch target */
+            min-height: 70px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 6px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .menu-item:hover, .menu-item:focus {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(0,0,0,.45), 0 0 0 1px rgba(200,169,110,.3);
+            border-color: var(--border-hv); background: var(--card-hv);
+        }
+        .menu-item:active { transform: scale(.96); box-shadow: none; }
+        .item-name {
+            display: block; font-weight: 600; font-size: .78rem;
+            color: var(--cream); line-height: 1.3;
+        }
+        .item-price {
+            color: var(--gold); font-size: .85rem;
+            font-weight: 700; font-family: var(--ff-serif);
+        }
+        /* ── Right: Bill Panel ───────────────────────────────────────── */
+        .bill-panel {
+            flex: 0 0 350px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: flex; flex-direction: column;
+            box-shadow: 0 8px 40px rgba(0,0,0,.4);
+            overflow: hidden;
+        }
+        .bill-header {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(200,169,110,.04);
+            flex-shrink: 0;
+        }
+        .bill-header-top {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;
+        }
+        .bill-title {
+            font-family: var(--ff-serif); font-size: 1.05rem;
+            font-weight: 700; color: var(--cream);
+        }
+        .bill-badge {
+            font-size: .65rem; font-weight: 700; letter-spacing: .06em;
+            text-transform: uppercase; color: #1a1714;
+            background: var(--gold); padding: 3px 10px; border-radius: 999px;
+        }
+        .bill-id { font-size: .72rem; color: var(--muted); }
+        .bill-id span { color: var(--gold); font-weight: 600; }
+        .order-list {
+            flex: 1; overflow-y: auto;
+            list-style: none; padding: 0; margin: 0; min-height: 0;
+        }
+        .order-empty {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100%; gap: 8px; color: var(--muted);
+            font-size: .83rem; padding: 40px; text-align: center;
+        }
+        .order-empty-icon { font-size: 2.4rem; opacity: .4; }
+        .order-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 18px; border-bottom: 1px solid var(--border);
+            font-size: .85rem; transition: background var(--transition); gap: 10px;
+        }
+        .order-item:active { background: rgba(200,169,110,.04); }
+        .order-item-info { flex: 1; min-width: 0; }
+        .order-item-name {
+            font-weight: 600; font-size: .8rem; color: var(--cream);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .order-item-unit { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+        .order-item-sub { font-weight: 700; color: var(--gold); font-size: .88rem; flex-shrink: 0; }
+        .qty-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .qty-btn {
+            background: rgba(200,169,110,.12);
+            border: 1px solid rgba(200,169,110,.25); color: var(--gold);
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition); font-family: var(--ff-sans); line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .qty-btn:hover { background: var(--gold); color: #1a1714; }
+        .qty-btn:active { transform: scale(.92); }
+        .qty-count { font-size: .82rem; font-weight: 600; color: var(--cream); min-width: 18px; text-align: center; }
+        .bill-footer {
+            padding: 16px 20px 18px; background: rgba(0,0,0,.22);
+            border-top: 1px solid var(--border); flex-shrink: 0;
+        }
+        .bill-row { display: flex; justify-content: space-between; font-size: .82rem; color: var(--muted); margin-bottom: 6px; }
+        .bill-row span:last-child { color: var(--cream); font-weight: 500; }
+        .bill-total {
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: var(--ff-serif); font-size: 1.3rem; font-weight: 700; color: var(--gold);
+            margin: 10px 0 14px; padding: 10px 0; border-top: 1px solid var(--border);
+        }
+        .bill-total-label { color: var(--cream); font-size: .95rem; }
+        .action-btn {
+            width: 100%; padding: 13px; margin-top: 8px; border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--ff-sans); font-size: .82rem; font-weight: 600;
+            cursor: pointer; text-transform: uppercase; letter-spacing: .07em;
+            transition: var(--transition); -webkit-tap-highlight-color: transparent;
+        }
+        .btn-print {
+            background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+            color: #1a1714; box-shadow: 0 4px 16px rgba(200,169,110,.3);
+        }
+        .btn-print:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,169,110,.4); }
+        .btn-print:active { transform: none; }
+        .btn-clear {
+            background: rgba(231,76,60,.1); color: #e74c3c;
+            border: 1px solid rgba(231,76,60,.3);
+        }
+        .btn-clear:hover { background: #e74c3c; color: #fff; }
+        /* Cart badge (mobile floating counter) */
+        .cart-badge {
+            display: none;
+            position: fixed; bottom: calc(var(--tab-h) + 16px); right: 20px;
+            background: var(--gold); color: #1a1714;
+            font-size: .72rem; font-weight: 700;
+            width: 26px; height: 26px; border-radius: 50%;
+            align-items: center; justify-content: center;
+            z-index: 200; box-shadow: 0 4px 16px rgba(200,169,110,.5);
+            animation: popIn .25s cubic-bezier(.34,1.56,.64,1);
+        }
+        @keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+        /* ── MOBILE TAB BAR ──────────────────────────────────── */
+        .tab-bar {
+            display: none;
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+            height: var(--tab-h);
+            background: rgba(9,8,7,.97);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid var(--border);
+            grid-template-columns: 1fr 1fr 1fr;
+            box-shadow: 0 -8px 30px rgba(0,0,0,.5);
+        }
+        .tab-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 4px; background: none; border: none; cursor: pointer;
+            color: var(--muted); font-family: var(--ff-sans); font-size: .65rem;
+            font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+            transition: color var(--transition);
+            -webkit-tap-highlight-color: transparent;
+            padding: 8px 0;
+            position: relative;
+        }
+        .tab-btn.active { color: var(--gold); }
+        .tab-btn.active::before {
+            content: '';
+            position: absolute; top: 0; left: 20%; right: 20%; height: 2px;
+            background: var(--gold); border-radius: 0 0 4px 4px;
+        }
+        .tab-btn .tab-icon { font-size: 1.4rem; }
+        .tab-btn .cart-count {
+            position: absolute; top: 6px; right: calc(50% - 20px);
+            background: var(--gold); color: #1a1714;
+            font-size: .6rem; font-weight: 700;
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            display: none;
+        }
+        /* ── PAY tab — gold, prominent ─────────────────────────── */
+        .tab-btn-pay {
+            background: linear-gradient(135deg, var(--gold-dk), var(--gold));
+            color: #1a1400;
+            font-size: .65rem; font-weight: 800;
+            letter-spacing: .1em; text-transform: uppercase;
+            border: none; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 3px;
+            transition: filter var(--transition);
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+        }
+        .tab-btn-pay:hover { filter: brightness(1.1); }
+        .tab-btn-pay .tab-icon { font-size: 1.4rem; }
+        .tab-btn-pay.pulse::after {
+            content: '';
+            position: absolute; inset: -2px;
+            border-radius: 0;
+            box-shadow: 0 0 0 0 rgba(200,169,110,.6);
+            animation: payPulse 1.6s ease-out infinite;
+        }
+        @keyframes payPulse {
+          0%   { box-shadow: 0 0 0 0   rgba(200,169,110,.7); }
+          70%  { box-shadow: 0 0 0 10px rgba(200,169,110,0); }
+          100% { box-shadow: 0 0 0 0   rgba(200,169,110,0); }
+        }
+        /* ── QR Payment Modal — mobile-first full-screen ────────── */
+        .qr-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 9000;
+            background: rgba(0,0,0,.86);
+            backdrop-filter: blur(10px);
+            align-items: flex-end; justify-content: center;
+        }
+        .qr-overlay.open { display: flex; animation: slideUpModal .3s cubic-bezier(.34,1.1,.64,1); }
+        @keyframes slideUpModal {
+            from { opacity:0; transform:translateY(60px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .qr-modal {
+            background: var(--surface);
+            border: 1px solid var(--border-hv);
+            border-radius: 24px 24px 0 0;
+            padding: 10px 28px 32px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 -20px 60px rgba(0,0,0,.7),
+                        0 0 0 1px rgba(200,169,110,.15),
+                        inset 0 1px 0 rgba(200,169,110,.1);
+            position: relative;
+            max-height: 96vh;
+            overflow-y: auto;
+        }
+        /* drag handle */
+        .qr-drag-handle {
+            width: 40px; height: 4px;
+            background: rgba(200,169,110,.3);
+            border-radius: 99px;
+            margin: 0 auto 18px;
+        }
+        .qr-close-btn {
+            position: absolute; top: 14px; right: 16px;
+            background: rgba(200,169,110,.1); border: 1px solid var(--border);
+            color: var(--muted); width: 30px; height: 30px;
+            border-radius: 50%; cursor: pointer; font-size: .9rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .qr-close-btn:hover { background: rgba(231,76,60,.15); color: #e74c3c; border-color: rgba(231,76,60,.4); }
+        .qr-logo-row {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; margin-bottom: 6px;
+        }
+        .qr-logo-row img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(200,169,110,.4); }
+        .qr-brand { font-family: var(--ff-serif); font-size: 1.1rem; font-weight: 700; color: var(--gold); }
+        .qr-subtitle { font-size: .72rem; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 20px; }
+        .qr-amount-display {
+            background: rgba(200,169,110,.08);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+        }
+        .qr-amount-label { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+        .qr-amount-value { font-family: var(--ff-serif); font-size: 2rem; font-weight: 700; color: var(--gold); }
+        .qr-canvas-wrap {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            display: inline-block;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 32px rgba(200,169,110,.2);
+            position: relative;
+        }
+        .qr-canvas-wrap canvas { display: block; }
+        .qr-scan-hint {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            font-size: .75rem; color: var(--muted); margin-bottom: 18px;
+        }
+        .qr-scan-hint::before, .qr-scan-hint::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+        .qr-upi-apps {
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+        }
+        .qr-upi-app {
+            background: rgba(200,169,110,.07);
+            border: 1px solid var(--border);
+            border-radius: 8px; padding: 6px 12px;
+            font-size: .68rem; color: var(--muted);
+            font-weight: 600; letter-spacing: .04em;
+        }
+        .qr-upi-id {
+            font-size: .72rem; color: var(--muted);
+            margin-bottom: 20px;
+        }
+        .qr-upi-id strong { color: var(--gold); font-weight: 600; }
+        .btn-paid {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: #fff; width: 100%; padding: 13px;
+            border: none; border-radius: var(--radius-sm);
+            font-family: var(--ff-sans); font-size: .82rem; font-weight: 600;
+            cursor: pointer; text-transform: uppercase; letter-spacing: .07em;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(39,174,96,.3);
+        }
+        .btn-paid:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(39,174,96,.4); }
+        .btn-paid:active { transform: none; }
+        .btn-qr {
+            background: linear-gradient(135deg, #000000, #ffffff);
+            color: #fff;
+            box-shadow: 0 4px 16px rgb(242, 255, 0);
+        }
+        .btn-qr:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(142,68,173,.4); }
+        .btn-qr:active { transform: none; }
+        /* ── Print ─────────────────────────────────────────────────── */
+        @media print {
+            .menu-panel, header, .btn-clear, .qty-btn, .tab-bar,
+            .back-link, .bill-badge, .qr-overlay { display: none !important; }
+            body { background: white !important; color: #000 !important;
+                   overflow: visible !important; height: auto !important; }
+            .main-container { display: block; padding: 0; }
+            .bill-panel { width: 100%; border: none; box-shadow: none; background: white; }
+            .bill-header { background: white; border-bottom: 2px solid #8a6a1a; }
+            .bill-title { color: #000 !important; }
+            .order-item-name { color: #000 !important; }
+            .bill-total { color: #8a6a1a !important; }
+            .bill-row span { color: #000 !important; }
+            .order-item { border-bottom: 1px solid #ddd; }
+            .qty-controls { display: none !important; }
+        }
+        /* ════════════════════════════════════════════════════════════
+           RESPONSIVE — TABLET (≤ 800px)
+        ════════════════════════════════════════════════════════════ */
+        @media (max-width: 800px) {
+            #datetime { display: none !important; }
+            .bill-panel { flex: 0 0 300px; }
+            .menu-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        }
+        /* ════════════════════════════════════════════════════════════
+           RESPONSIVE — MOBILE (≤ 600px) — Tab layout
+        ════════════════════════════════════════════════════════════ */
+        @media (max-width: 600px) {
+            body { overflow: hidden; }
+            /* Show tab bar */
+            .tab-bar { display: grid; }
+            /* Stack panels, both full width */
+            .main-container {
+                padding: 12px 12px 0;
+                padding-bottom: calc(var(--tab-h) + 12px);
+                gap: 0;
+                overflow: visible;
+                position: relative;
+            }
+            .menu-panel, .bill-panel {
+                position: absolute;
+                inset: 12px 12px calc(var(--tab-h) + 12px);
+                flex: none;
+                width: auto;
+                border-radius: var(--radius);
+                transition: opacity .3s ease, transform .3s ease;
+            }
+            /* Active / inactive states driven by JS classes */
+            .menu-panel.tab-active { opacity: 1; transform: none; pointer-events: auto; }
+            .menu-panel.tab-hidden { opacity: 0; transform: translateX(-20px); pointer-events: none; }
+            .bill-panel.tab-active { opacity: 1; transform: none; pointer-events: auto; }
+            .bill-panel.tab-hidden { opacity: 0; transform: translateX(20px); pointer-events: none; }
+            /* Bigger tap targets on mobile */
+            .menu-item { min-height: 76px; padding: 12px 8px; }
+            .item-name { font-size: .8rem; }
+            .menu-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+            /* Cart count pill on tab */
+            .tab-btn .cart-count { display: flex; }
+            /* Header tweaks */
+            header { padding: 0 14px; }
+            .logo-name { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+<!-- ── Header ─────────────────────────────────────────────── -->
+<header>
+    <a href="./index.html" class="header-logo">
+        <img src="./DAS.png" alt="DAS CAFE" />
+        <span class="logo-name">DAS <span>CAFE</span></span>
+    </a>
+    <div class="header-right">
+        <div id="datetime"></div>
+        <a href="./index.html" class="back-link">← Home</a>
+    </div>
+</header>
+<!-- ── Main Layout ──────────────────────────────────────────── -->
+<div class="main-container">
+    <!-- Left / Tab 1: Menu -->
+    <div class="menu-panel tab-active" id="panel-menu">
+        <div class="menu-panel-title">Our Menu</div>
+        <div class="menu-panel-sub">Tap any item to add to your order</div>
+        <h3 class="category-title"><span><img src="tea.png" alt="tea" style="width: 20px; height: 20px;"></span> Tea</h3>
+        <div class="menu-grid" id="tea-container"></div>
+        <h3 class="category-title"><span><img src="tea (1).png" alt="coffee" style="width: 20px; height: 20px;"></span> Coffee</h3>
+        <div class="menu-grid" id="coffee-container"></div>
+        <h3 class="category-title"><span><img src="s.op.png" alt="sandwich" style="width: 20px; height: 20px;"></span> Sandwich</h3>
+        <div class="menu-grid" id="sandwich-container"></div>
+        <h3 class="category-title"><span><img src="dosa.png" alt="south-indian" style="width: 20px; height: 20px;"></span> South Indian Food</h3>
+        <div class="menu-grid" id="south-indian-container"></div>
+        <h3 class="category-title"><span><img src="soda (1).png" alt="cold-drink" style="width: 20px; height: 20px;"></span> Cold Drink</h3>
+        <div class="menu-grid" id="cold-drink-container"></div>
+        <h3 class="category-title"><span><img src="bottel.png" alt="water" style="width: 20px; height: 20px;"></span> Water</h3>
+        <div class="menu-grid" id="water-container"></div>
+    </div>
+    <!-- Right / Tab 2: Bill -->
+    <div class="bill-panel tab-hidden" id="panel-bill">
+        <div class="bill-header">
+            <div class="bill-header-top">
+                <div class="bill-title">Order Invoice</div>
+                <div class="bill-badge">Live</div>
+            </div>
+            <div class="bill-id">Order ID: #<span id="order-id">0000</span></div>
+        </div>
+        <ul class="order-list" id="order-list">
+            <li class="order-empty">
+                <div class="order-empty-icon">🛒</div>
+                <span>Your cart is empty</span>
+                <span style="font-size:.7rem;opacity:.6;margin-top:4px;">Tap menu items to add them</span>
+            </li>
+        </ul>
+        <div class="bill-footer">
+            <div class="bill-row"><span>Subtotal</span><span id="sub-total">₹0.00</span></div>
+            <div class="bill-total">
+                <span class="bill-total-label">Total</span>
+                <span id="grand-total">₹0.00</span>
+            </div>
+            <button class="action-btn btn-qr" id="btn-pay-qr" onclick="openQRModal()"><img src="wallet.png" alt="QR-CODE" style="width: 20px; height: 20px; margin-right: 8px; padding-top: 4px ; ">  PAY QR-CODE</button>
+            <button class="action-btn btn-print" onclick="window.print()" style="margin-top:8px;">🖨&nbsp; Print Receipt</button>
+            <button class="action-btn btn-clear" onclick="clearCart()">✕&nbsp; Clear Order</button>
+        </div>
+    </div>
+</div>
+<!-- ── Mobile Tab Bar ───────────────────────────────────────── -->
+<nav class="tab-bar" role="tablist">
+    <button class="tab-btn active" id="tab-menu-btn" onclick="switchTab('menu')" role="tab" aria-selected="true">
+        <span class="tab-icon">🍽</span>
+        <span>Menu</span>
+    </button>
+    <button class="tab-btn" id="tab-cart-btn" onclick="switchTab('cart')" role="tab" aria-selected="false">
+        <span class="tab-icon">🛒</span>
+        <span id="cart-tab-label">Cart</span>
+        <span class="cart-count" id="cart-count-badge">0</span>
+    </button>
+    <button class="tab-btn-pay" id="tab-pay-btn" onclick="openQRModal()" aria-label="Pay with QR">
+        <span class="tab-icon">⚡</span>
+        <span>PAY</span>
+    </button>
+</nav>
+
+<!-- ── QR Payment Modal ────────────────────────────────────────── -->
+<div class="qr-overlay" id="qr-overlay" role="dialog" aria-modal="true" aria-label="QR Payment">
+    <div class="qr-modal">
+        <div class="qr-drag-handle"></div>
+        <button class="qr-close-btn" onclick="closeQRModal()" aria-label="Close">✕</button>
+        <div class="qr-logo-row">
+            <img src="./DAS.png" alt="DAS CAFE" />
+            <span class="qr-brand">DAS CAFE</span>
+        </div>
+        <div class="qr-subtitle">Scan &amp; Pay &middot; UPI Payment</div>
+        <div class="qr-amount-display">
+            <div class="qr-amount-label">Amount to Pay</div>
+            <div class="qr-amount-value" id="qr-amount-display">₹0.00</div>
+        </div>
+        <div class="qr-canvas-wrap">
+            <div id="qr-code"></div>
+        </div>
+        <div class="qr-scan-hint">Scan with any UPI app</div>
+        <div class="qr-upi-apps">
+            <span class="qr-upi-app"><a href="https://play.google.com/store/apps/details?id=com.phonepe.app&hl=en_IN"><img src="icons8-phone-pe-480.png" alt="phonepe" style="width: 20px; height: 20px;"></a></span>
+            <span class="qr-upi-app"><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.nbu.paisa.user&hl=en_IN"><img src="google-pay.png" alt="gpay" style="width: 20px; height: 20px;"></a></span>
+            <span class="qr-upi-app"><a href="https://play.google.com/store/apps/details?id=net.one97.paytm&hl=en_IN"><img src="paytm.png" alt="paytm" style="width: 20px; height: 20px;"></a></span>
+            <span class="qr-upi-app"><a href="https://play.google.com/store/apps/details?id=org.fino.bhim&hl=en_IN"><img src="wallet.png" alt="bhim" style="width: 20px; height: 20px;"></a></span>
+        </div>
+        <div class="qr-upi-id">UPI ID: <strong id="qr-upi-shown">niramay22006@okaxis</strong></div>
+        <button class="action-btn btn-paid" onclick="handlePaymentDone()">✓&nbsp; Done — Mark as Paid</button>
+    </div>
+</div>
+
+<!-- ── Script ───────────────────────────────────────────────── -->
+<!-- QRCode.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    /* ── Menu data (UNCHANGED) ───────────────────────────────── */
+    const menuData = [
+        { id: 1,  name: "HALF TEA",                     price: 10,  cat: "tea" },
+        { id: 2,  name: "FULL TEA",                     price: 20,  cat: "tea" },
+        { id: 3,  name: "HALF COFFEE",                  price: 20,  cat: "coffee" },
+        { id: 4,  name: "FULL COFFEE",                  price: 40,  cat: "coffee" },
+        { id: 5,  name: "BREAD BUTTER",                 price: 30,  cat: "sandwich" },
+        { id: 6,  name: "UNBAKE SANDWICH",              price: 50,  cat: "sandwich" },
+        { id: 7,  name: "UNBAKE CHESSE SANDWICH",       price: 80,  cat: "sandwich" },
+        { id: 8,  name: "GRILL SANDWICH",               price: 70,  cat: "sandwich" },
+        { id: 9,  name: "GRILL CHESSE SANDWICH",        price: 100, cat: "sandwich" },
+        { id: 10, name: "JUMBO SANDWICH",               price: 120, cat: "sandwich" },
+        { id: 11, name: "IDLI",                         price: 80,  cat: "south" },
+        { id: 12, name: "FRY IDLI",                     price: 120, cat: "south" },
+        { id: 13, name: "PLAN DOSA",                    price: 100, cat: "south" },
+        { id: 14, name: "MASALA DOSA",                  price: 120, cat: "south" },
+        { id: 15, name: "CHESSE MASALA",                price: 150, cat: "south" },
+        { id: 16, name: "ONIAN CHESSE MASALA",          price: 100, cat: "south" },
+        { id: 17, name: "PANEER CHESSE MASALA DOSA",    price: 180, cat: "south" },
+        { id: 18, name: "SCHEZWAN PLAN DOSA",           price: 110, cat: "south" },
+        { id: 19, name: "SCHEZWAN MASALA DOSA",         price: 130, cat: "south" },
+        { id: 20, name: "SCHEZWAN CHESSE MASALA",       price: 160, cat: "south" },
+        { id: 21, name: "SCHEZWAN ONIAN CHESSE MASALA", price: 150, cat: "south" },
+        { id: 22, name: "PIZAA DOSA",                   price: 170, cat: "south" },
+        { id: 23, name: "THUMSAB",                      price: 20,  cat: "cold" },
+        { id: 24, name: "SPRITE",                       price: 20,  cat: "cold" },
+        { id: 25, name: "COKE",                         price: 20,  cat: "cold" },
+        { id: 26, name: "FANTA",                        price: 20,  cat: "cold" },
+        { id: 27, name: "JEERA",                        price: 10,  cat: "cold" },
+        { id: 28, name: "AMUL LASSI",                   price: 25,  cat: "cold" },
+        { id: 29, name: "BIG WATER BOTTEL",             price: 20,  cat: "water" },
+        { id: 30, name: "SMALL WATER BOTTEL",           price: 10,  cat: "water" }
+    ];
+    let cart = {};
+    /* ── Init ─────────────────────────────────────────────────── */
+    window.onload = () => {
+        renderMenu();
+        updateTime();
+        setInterval(updateTime, 1000);
+        document.getElementById('order-id').innerText = Math.floor(1000 + Math.random() * 9000);
+        // On desktop, always show both panels
+        adjustForScreenSize();
+        window.addEventListener('resize', adjustForScreenSize);
+    };
+    function updateTime() {
+        const el = document.getElementById('datetime');
+        if (el) el.innerText = new Date().toLocaleString();
+    }
+    /* ── Screen-size tab management ───────────────────────────── */
+    function adjustForScreenSize() {
+        const isMobile = window.innerWidth <= 600;
+        const menuPanel = document.getElementById('panel-menu');
+        const billPanel = document.getElementById('panel-bill');
+        if (!isMobile) {
+            // Desktop: always show both
+            menuPanel.classList.remove('tab-active', 'tab-hidden');
+            billPanel.classList.remove('tab-active', 'tab-hidden');
+        } else {
+            // Mobile: restore last active tab
+            const active = sessionStorage.getItem('activeTab') || 'menu';
+            setMobileTab(active);
+        }
+    }
+    /* ── Mobile tab switching ─────────────────────────────────── */
+    function switchTab(tab) {
+        sessionStorage.setItem('activeTab', tab);
+        setMobileTab(tab);
+    }
+    function setMobileTab(tab) {
+        const menuPanel = document.getElementById('panel-menu');
+        const billPanel = document.getElementById('panel-bill');
+        const menuBtn   = document.getElementById('tab-menu-btn');
+        const cartBtn   = document.getElementById('tab-cart-btn');
+        if (tab === 'menu') {
+            menuPanel.classList.add('tab-active'); menuPanel.classList.remove('tab-hidden');
+            billPanel.classList.add('tab-hidden'); billPanel.classList.remove('tab-active');
+            menuBtn.classList.add('active'); menuBtn.setAttribute('aria-selected', 'true');
+            cartBtn.classList.remove('active'); cartBtn.setAttribute('aria-selected', 'false');
+        } else {
+            billPanel.classList.add('tab-active'); billPanel.classList.remove('tab-hidden');
+            menuPanel.classList.add('tab-hidden'); menuPanel.classList.remove('tab-active');
+            cartBtn.classList.add('active'); cartBtn.setAttribute('aria-selected', 'true');
+            menuBtn.classList.remove('active'); menuBtn.setAttribute('aria-selected', 'false');
+        }
+    }
+    /* ── Render Menu ──────────────────────────────────────────── */
+    function renderMenu() {
+        const containers = {
+            tea:      document.getElementById('tea-container'),
+            coffee:   document.getElementById('coffee-container'),
+            sandwich: document.getElementById('sandwich-container'),
+            south:    document.getElementById('south-indian-container'),
+            cold:     document.getElementById('cold-drink-container'),
+            water:    document.getElementById('water-container')
+        };
+        menuData.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'menu-item';
+            el.onclick = () => addToCart(item.id);
+            el.innerHTML = `<span class="item-name">${item.name}</span><span class="item-price">₹${item.price}</span>`;
+            containers[item.cat].appendChild(el);
+        });
+    }
+    /* ── Cart logic (UNCHANGED) ───────────────────────────────── */
+    function addToCart(id) {
+        cart[id] = (cart[id] || 0) + 1;
+        renderCart();
+        // On mobile, show feedback
+        if (window.innerWidth <= 600) {
+            const badge = document.getElementById('cart-count-badge');
+            badge.style.animation = 'none';
+            void badge.offsetWidth;
+            badge.style.animation = 'popIn .25s cubic-bezier(.34,1.56,.64,1)';
+        }
+    }
+    function updateQty(id, delta) {
+        cart[id] += delta;
+        if (cart[id] <= 0) delete cart[id];
+        renderCart();
+    }
+    function renderCart() {
+        const list = document.getElementById('order-list');
+        list.innerHTML = '';
+        let total = 0;
+        const keys = Object.keys(cart);
+        const itemCount = keys.reduce((s, k) => s + cart[k], 0);
+        // Update mobile badge
+        const badge = document.getElementById('cart-count-badge');
+        if (badge) {
+            badge.textContent = itemCount;
+            badge.style.display = itemCount > 0 ? 'flex' : 'none';
+        }
+        // Pulse the PAY tab when items are in cart
+        const payBtn = document.getElementById('tab-pay-btn');
+        if (payBtn) {
+            payBtn.classList.toggle('pulse', itemCount > 0);
+        }
+        // Update tab label
+        const label = document.getElementById('cart-tab-label');
+        if (label) label.textContent = itemCount > 0 ? `Cart (${itemCount})` : 'Cart';
+        if (keys.length === 0) {
+            list.innerHTML = `
+                <li class="order-empty">
+                    <div class="order-empty-icon">🛒</div>
+                    <span>Your cart is empty</span>
+                    <span style="font-size:.7rem;opacity:.6;margin-top:4px;">Tap menu items to add them</span>
+                </li>`;
+        } else {
+            keys.forEach(id => {
+                const item = menuData.find(m => m.id == id);
+                const sub = item.price * cart[id];
+                total += sub;
+                const li = document.createElement('li');
+                li.className = 'order-item';
+                li.innerHTML = `
+                    <div class="order-item-info">
+                        <div class="order-item-name">${item.name}</div>
+                        <div class="order-item-unit">₹${item.price} × ${cart[id]}</div>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="updateQty(${id}, -1)">−</button>
+                        <span class="qty-count">${cart[id]}</span>
+                        <button class="qty-btn" onclick="updateQty(${id}, 1)">+</button>
+                    </div>
+                    <div class="order-item-sub">₹${sub}</div>`;
+                list.appendChild(li);
+            });
+        }
+        document.getElementById('sub-total').innerText  = '₹' + total.toFixed(2);
+        document.getElementById('grand-total').innerText = '₹' + total.toFixed(2);
+    }
+    function clearCart() {
+        if (confirm("Clear current order?")) { cart = {}; renderCart(); }
+    }
+
+    /* ── QR Payment ───────────────────────────────────────────── */
+    const UPI_ID   = 'niramay22006@okaxis';   // ← Change to your real UPI ID
+    const MERCHANT = 'DAS CAFE';
+
+    let qrInstance = null;
+
+    function openQRModal() {
+        const totalText = document.getElementById('grand-total').innerText;
+        const amount = parseFloat(totalText.replace(/[^\d.]/g, '')) || 0;
+
+        if (amount <= 0) {
+            alert('Your cart is empty. Please add items before paying.');
+            return;
+        }
+
+        // Build UPI deep-link (no stray closing brace)
+        const upiStr = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT)}&am=${amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent('DAS CAFE Order')}`;
+
+        document.getElementById('qr-amount-display').innerText = '\u20b9' + amount.toFixed(2);
+        document.getElementById('qr-upi-shown').innerText = UPI_ID;
+
+        // Larger QR on mobile
+        const qrSize = window.innerWidth <= 600 ? 220 : 200;
+        const qrBox = document.getElementById('qr-code');
+        qrBox.innerHTML = '';
+        qrInstance = new QRCode(qrBox, {
+            text: upiStr,
+            width:  qrSize,
+            height: qrSize,
+            colorDark:  '#1a0f00',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        document.getElementById('qr-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeQRModal() {
+        document.getElementById('qr-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function handlePaymentDone() {
+        closeQRModal();
+        // Show success message and clear cart
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position:fixed;inset:0;z-index:9999;
+            background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+            display:flex;align-items:center;justify-content:center;
+            animation:fadeInModal .3s ease;
+        `;
+        overlay.innerHTML = `
+            <div style="text-align:center;color:#fff;">
+                <div style="font-size:4rem;margin-bottom:16px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);">✅</div>
+                <div style="font-family:var(--ff-serif);font-size:1.6rem;font-weight:700;color:#2ecc71;margin-bottom:8px;">Payment Received!</div>
+                <div style="font-size:.9rem;color:rgba(255,255,255,.6);">Thank you for visiting DAS CAFE</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        setTimeout(() => {
+            overlay.remove();
+            cart = {};
+            renderCart();
+        }, 2200);
+    }
+
+    // Close modal when clicking backdrop
+    document.getElementById('qr-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeQRModal();
+    });
+</script>
+</body>
+</html>
