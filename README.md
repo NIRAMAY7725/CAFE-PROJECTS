@@ -1,3 +1,4 @@
+<img width="1479" height="736" alt="Screenshot 2026-07-13 031544" src="https://github.com/user-attachments/assets/98889644-0545-4631-9268-2ea8f55107f2" />
 ☕ CAFE-PROJECTS [polish by ai]
 
 A modern and responsive cafe website built using HTML, CSS, and JavaScript. This project showcases a clean user interface, responsive design, and interactive elements to provide an engaging user experience.
