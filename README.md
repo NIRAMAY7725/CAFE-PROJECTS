@@ -1,4 +1,4 @@
-☕ CAFE-PROJECTS
+☕ CAFE-PROJECTS [polish by ai]
 
 A modern and responsive cafe website built using HTML, CSS, and JavaScript. This project showcases a clean user interface, responsive design, and interactive elements to provide an engaging user experience.
 
