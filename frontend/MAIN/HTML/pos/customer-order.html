@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Menu - DAS CAFE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="customer-order.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Customer Header -->
+    <header class="cust-header">
+        <div class="cust-container">
+            <a href="index.html" class="cust-logo">
+                <img src="images/logo.png" alt="DAS CAFE" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23D4AF37\'/></svg>'">
+                <h1>DAS CAFE</h1>
+            </a>
+            <div class="cust-nav">
+                <button id="cart-toggle" class="btn-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-badge" class="badge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="cust-main cust-container">
+        <!-- Category Navigation -->
+        <div class="cust-categories" id="cust-categories">
+            <button class="cat-chip active" data-cat="all">All</button>
+            <!-- Generated dynamically -->
+        </div>
+
+        <!-- Menu Grid -->
+        <div class="cust-menu" id="cust-menu">
+            <!-- Generated dynamically -->
+        </div>
+    </main>
+
+    <!-- Slide-over Cart Panel -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-panel" id="cart-panel">
+        <div class="cart-header">
+            <h2>Your Order</h2>
+            <button id="close-cart" class="btn-close"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="cart-items" id="cart-items">
+            <!-- Generated dynamically -->
+            <div class="cart-empty">Your cart is empty. Please add some items!</div>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-summary">
+                <span>Total Amount:</span>
+                <span id="cart-total" class="cart-total-price">₹0</span>
+            </div>
+            <div class="customer-details">
+                <input type="text" id="cust-name-input" placeholder="Enter your name" class="cust-input">
+            </div>
+            <button id="place-order-btn" class="btn-place-order" disabled>Place Order (<span id="btn-total">₹0</span>)</button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>Order Placed!</h2>
+            <p>Thank you <strong id="success-name"></strong>. Your order has been successfully recorded.</p>
+            <p class="order-id-display">Order ID: <span id="success-id"></span></p>
+            <button class="btn-done" onclick="window.location.reload()">Done</button>
+        </div>
+    </div>
+
+    <script src="menu-data.js"></script>
+    <script src="customer-order.js"></script>
+</body>
+</html>

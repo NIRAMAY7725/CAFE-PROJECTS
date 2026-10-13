@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="DAS CAFE — Customer Window Panel. Order fresh South Indian coffee, dosas, snacks, track your order in real-time, and reserve tables." />
+  <title>DAS CAFE — Customer Dining & Order Panel</title>
+  <link rel="icon" href="./DAS.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./user-panel.css" />
+</head>
+<body>
+
+  <!-- ══ USER PANEL HEADER ════════════════════════════════════════ -->
+  <header class="u-header" id="u-header">
+    <div class="u-header-inner">
+      <div class="u-header-left">
+        <a href="index.html" class="u-logo" title="Back to DAS CAFE Home">
+          <img src="./DAS.png" alt="DAS CAFE" class="u-logo-img" />
+          <div class="u-logo-text">
+            <span>DAS <em>CAFE</em></span>
+            <small>Customer Dining Hub</small>
+          </div>
+        </a>
+      </div>
+
+      <div class="u-dining-selector" id="u-dining-selector">
+        <label for="dining-mode" class="dining-label">
+          <span class="dining-icon">🍽️</span> Order Mode:
+        </label>
+        <select id="dining-mode" class="dining-select">
+          <option value="dine-in">Dine-In (Table Service)</option>
+          <option value="takeaway">Takeaway (Parcel)</option>
+        </select>
+        <div class="table-select-wrapper" id="table-select-wrapper">
+          <label for="table-number" class="table-label">Table #:</label>
+          <select id="table-number" class="table-select">
+            <option value="Table 1">Table 01</option>
+            <option value="Table 2">Table 02</option>
+            <option value="Table 3" selected>Table 03</option>
+            <option value="Table 4">Table 04</option>
+            <option value="Table 5">Table 05</option>
+            <option value="Table 6">Table 06</option>
+            <option value="Table 7">Table 07</option>
+            <option value="Table 8">Table 08</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="u-header-right">
+        <!-- Live status pill -->
+        <div class="u-status-pill">
+          <span class="status-dot"></span>
+          <span>Cafe Open · Vega</span>
+        </div>
+
+        <!-- Cart trigger button -->
+        <button class="u-cart-btn" id="btn-open-cart" aria-label="View Cart">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-text">Your Order</span>
+          <span class="cart-count" id="cart-count">0</span>
+          <span class="cart-badge-total" id="cart-badge-total">₹0</span>
+        </button>
+
+        <!-- Switch to Owner Panel link -->
+        <a href="owner-panel.html" class="u-owner-switch" title="Go to Cafe Management Owner Panel">
+          <span class="owner-icon">🔐</span>
+          <span>Owner Panel</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ HERO BANNER ═════════════════════════════════════════════ -->
+  <section class="u-hero">
+    <div class="u-hero-bg"></div>
+    <div class="u-hero-content">
+      <div class="u-hero-badge">Authentic South Indian Flavors · Fresh Daily</div>
+      <h1 class="u-hero-title">Experience Handcrafted Coffee & Artisan Dosas</h1>
+      <p class="u-hero-desc">Select items from our live digital menu, customize your order, and track kitchen preparation in real time right from your table.</p>
+    </div>
+  </section>
+
+  <!-- ══ NAVIGATION TABS ═════════════════════════════════════════ -->
+  <nav class="u-nav-tabs" id="u-nav-tabs" role="tablist">
+    <div class="u-nav-container">
+      <button class="u-tab-btn active" data-tab="menu" role="tab" aria-selected="true">
+        <span>🍽️</span> Menu & Order
+      </button>
+      <button class="u-tab-btn" data-tab="tracker" role="tab" aria-selected="false">
+        <span>📍</span> Live Order Tracker <span class="active-orders-dot" id="active-orders-dot" style="display:none;"></span>
+      </button>
+      <button class="u-tab-btn" data-tab="reserve" role="tab" aria-selected="false">
+        <span>📅</span> Table Reservation
+      </button>
+      <button class="u-tab-btn" data-tab="reviews" role="tab" aria-selected="false">
+        <span>⭐</span> Guest Reviews & Feedback
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══ MAIN PANELS CONTAINER ═══════════════════════════════════ -->
+  <main class="u-main-container">
+
+    <!-- ── TAB 1: MENU & ORDER ─────────────────────────────────── -->
+    <section class="u-panel active" id="tab-menu" role="tabpanel">
+      <!-- Search and Filter Bar -->
+      <div class="u-filter-bar">
+        <div class="u-search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="menu-search" class="search-input" placeholder="Search coffee, tea, dosa, sandwich, beverage..." />
+          <button id="search-clear" class="search-clear" style="display:none;">✕</button>
+        </div>
+
+        <div class="u-diet-filters" id="diet-filters">
+          <button class="diet-btn active" data-diet="all">All Items</button>
+          <button class="diet-btn" data-diet="veg">🌿 Pure Veg</button>
+          <button class="diet-btn" data-diet="special">⭐ Chef's Special</button>
+        </div>
+      </div>
+
+      <!-- Category Pills -->
+      <div class="u-category-pills" id="category-pills">
+        <button class="cat-pill active" data-cat="all">All Categories</button>
+        <button class="cat-pill" data-cat="coffee">☕ Filter Coffee</button>
+        <button class="cat-pill" data-cat="tea">🫖 Royal Tea</button>
+        <button class="cat-pill" data-cat="south">🥞 South Indian & Dosa</button>
+        <button class="cat-pill" data-cat="sandwich">🥪 Gourmet Sandwiches</button>
+        <button class="cat-pill" data-cat="cold">🥤 Chilled Beverages</button>
+        <button class="cat-pill" data-cat="water">💧 Mineral Water</button>
+      </div>
+
+      <!-- Menu Grid -->
+      <div class="u-menu-grid" id="u-menu-grid">
+        <!-- Rendered dynamically via user-panel.js -->
+      </div>
+    </section>
+
+    <!-- ── TAB 2: LIVE ORDER TRACKER ────────────────────────────── -->
+    <section class="u-panel" id="tab-tracker" role="tabpanel">
+      <div class="tracker-header">
+        <h2>📍 Live Order Tracker & Kitchen Status</h2>
+        <p>Follow your meal preparation progress in real-time. Connected directly with our kitchen management system.</p>
+      </div>
+
+      <div class="tracker-content" id="tracker-content">
+        <!-- Dynamic order tracking cards populated by JS -->
+      </div>
+    </section>
+
+    <!-- ── TAB 3: TABLE RESERVATION ─────────────────────────────── -->
+    <section class="u-panel" id="tab-reserve" role="tabpanel">
+      <div class="reserve-container">
+        <div class="reserve-card">
+          <div class="reserve-header">
+            <h2>📅 Reserve a Table at DAS CAFE</h2>
+            <p>Book your cozy corner in advance for coffee dates, family brunches, or work meetings.</p>
+          </div>
+
+          <form id="reservation-form" class="reserve-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="res-name">Full Name *</label>
+                <input type="text" id="res-name" class="u-input" placeholder="e.g. Rahul Sharma" required />
+              </div>
+              <div class="form-group">
+                <label for="res-phone">Phone Number *</label>
+                <input type="tel" id="res-phone" class="u-input" placeholder="e.g. +91 98765 43210" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="res-date">Date *</label>
+                <input type="date" id="res-date" class="u-input" required />
+              </div>
+              <div class="form-group">
+                <label for="res-time">Time Slot *</label>
+                <select id="res-time" class="u-input" required>
+                  <option value="">Select Preferred Time</option>
+                  <option value="10:00 AM">10:00 AM – Morning Brew</option>
+                  <option value="11:30 AM">11:30 AM – Brunch Time</option>
+                  <option value="01:00 PM">01:00 PM – Lunch Hour</option>
+                  <option value="03:30 PM">03:30 PM – Afternoon Coffee</option>
+                  <option value="05:00 PM">05:00 PM – Sunset Snacks</option>
+                  <option value="07:00 PM">07:00 PM – Dinner Seating</option>
+                  <option value="08:30 PM">08:30 PM – Late Evening</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="res-guests">Number of Guests *</label>
+                <select id="res-guests" class="u-input" required>
+                  <option value="1">1 Person (Solo Work / Coffee)</option>
+                  <option value="2" selected>2 Persons (Duo / Date)</option>
+                  <option value="3">3 Persons</option>
+                  <option value="4">4 Persons (Family / Friends)</option>
+                  <option value="6">5-6 Persons (Small Group)</option>
+                  <option value="8">7-8 Persons (Celebration)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="res-seating">Seating Preference</label>
+                <select id="res-seating" class="u-input">
+                  <option value="Indoor AC">Indoor Cozy & AC</option>
+                  <option value="Window Side">Window Side (City View)</option>
+                  <option value="Outdoor Terrace">Outdoor Terrace Seating</option>
+                  <option value="Quiet Corner">Quiet Corner (Reading / Work)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="res-notes">Special Requests (Optional)</label>
+              <textarea id="res-notes" class="u-textarea" rows="2" placeholder="Anniversary, birthday, high-chair needed, dietary preferences..."></textarea>
+            </div>
+
+            <button type="submit" class="u-btn-primary" id="btn-submit-res">
+              Confirm Table Reservation →
+            </button>
+          </form>
+
+          <div class="res-confirmation" id="res-confirmation" style="display:none;">
+            <div class="res-badge">✓ Reservation Confirmed!</div>
+            <h3>We Look Forward to Welcoming You</h3>
+            <p>Your booking details have been registered with our front desk team:</p>
+            <div class="res-ticket" id="res-ticket-body"></div>
+            <button class="u-btn-outline" onclick="document.getElementById('res-confirmation').style.display='none';document.getElementById('reservation-form').style.display='block';">Book Another Table</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 4: GUEST REVIEWS & FEEDBACK ──────────────────────── -->
+    <section class="u-panel" id="tab-reviews" role="tabpanel">
+      <div class="reviews-layout">
+        <div class="review-form-card">
+          <h2>⭐ Share Your Dining Experience</h2>
+          <p>Your feedback helps our baristas and culinary team craft perfection every single day.</p>
+
+          <form id="feedback-form" class="feedback-form">
+            <div class="form-group">
+              <label>How would you rate DAS CAFE?</label>
+              <div class="star-rating" id="star-rating">
+                <button type="button" class="star-btn active" data-rating="1">★</button>
+                <button type="button" class="star-btn active" data-rating="2">★</button>
+                <button type="button" class="star-btn active" data-rating="3">★</button>
+                <button type="button" class="star-btn active" data-rating="4">★</button>
+                <button type="button" class="star-btn active" data-rating="5">★</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fb-name">Your Name</label>
+              <input type="text" id="fb-name" class="u-input" placeholder="e.g. Ananya Roy" required />
+            </div>
+
+            <div class="form-group">
+              <label for="fb-fave">Favorite Item Ordered</label>
+              <select id="fb-fave" class="u-input">
+                <option value="FULL COFFEE">Full Coffee (Authentic South Indian Filter)</option>
+                <option value="MASALA DOSA">Crispy Masala Dosa</option>
+                <option value="CHESSE MASALA">Cheese Masala Dosa</option>
+                <option value="GRILL CHESSE SANDWICH">Grill Cheese Sandwich</option>
+                <option value="FULL TEA">Royal Ginger Tea</option>
+                <option value="IDLI">Steamed Soft Idli with Sambar</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="fb-text">Your Comments & Compliments</label>
+              <textarea id="fb-text" class="u-textarea" rows="3" placeholder="Tell us what you loved about our brew, food, or hospitality..." required></textarea>
+            </div>
+
+            <button type="submit" class="u-btn-primary">Post Review</button>
+          </form>
+        </div>
+
+        <div class="reviews-stream-card">
+          <div class="stream-header">
+            <h3>Recent Customer Reviews</h3>
+            <span class="rating-badge">★ 4.9 / 5.0 (50k+ Happy Guests)</span>
+          </div>
+          <div class="reviews-list" id="reviews-list">
+            <!-- Dynamic and seeded reviews -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ SLIDE-OVER CART & CHECKOUT DRAWER ═════════════════════════ -->
+  <div class="u-cart-overlay" id="u-cart-overlay" aria-hidden="true"></div>
+  <aside class="u-cart-drawer" id="u-cart-drawer" aria-label="Your Order Cart">
+    <div class="cart-drawer-header">
+      <div class="cart-title">
+        <span class="cart-badge-icon">🛒</span>
+        <h2>Your Order Cart</h2>
+      </div>
+      <button class="cart-close-btn" id="btn-close-cart" aria-label="Close cart">✕</button>
+    </div>
+
+    <!-- Dining Location Tag in Cart -->
+    <div class="cart-location-bar" id="cart-location-bar">
+      <span>Service Mode:</span>
+      <strong id="cart-location-text">Dine-In · Table 03</strong>
+    </div>
+
+    <!-- Cart Items Scroll -->
+    <div class="cart-items-wrapper" id="cart-items-wrapper">
+      <!-- Items generated dynamically -->
+      <div class="cart-empty-state" id="cart-empty-state">
+        <div class="empty-icon">☕</div>
+        <div class="empty-title">Your cart is empty</div>
+        <p>Explore our menu and add authentic coffees, dosas, and treats!</p>
+        <button class="u-btn-outline" onclick="document.getElementById('btn-close-cart').click();">Browse Menu</button>
+      </div>
+    </div>
+
+    <!-- Cart Footer & Checkout -->
+    <div class="cart-drawer-footer" id="cart-drawer-footer" style="display:none;">
+      <!-- Special Instruction -->
+      <div class="cart-notes">
+        <input type="text" id="order-notes" class="cart-note-input" placeholder="Special note (e.g., less sugar, extra chutney, well toasted)..." />
+      </div>
+
+      <!-- Coupon Code -->
+      <div class="coupon-box">
+        <input type="text" id="coupon-code" class="coupon-input" placeholder="Coupon code (Try: DAS10)" />
+        <button type="button" id="btn-apply-coupon" class="coupon-btn">Apply</button>
+      </div>
+      <div id="coupon-message" class="coupon-msg"></div>
+
+      <!-- Bill Breakdown -->
+      <div class="cart-bill-summary">
+        <div class="bill-row">
+          <span>Subtotal</span>
+          <span id="bill-subtotal">₹0</span>
+        </div>
+        <div class="bill-row" id="bill-discount-row" style="display:none;">
+          <span>Discount Applied</span>
+          <span class="discount-val" id="bill-discount">-₹0</span>
+        </div>
+        <div class="bill-row">
+          <span>GST (5% Inclusive)</span>
+          <span id="bill-tax">₹0</span>
+        </div>
+        <div class="bill-row total-row">
+          <span>Total Payable</span>
+          <span id="bill-total">₹0</span>
+        </div>
+      </div>
+
+      <!-- Customer Details Input -->
+      <div class="cart-customer-fields">
+        <input type="text" id="cust-name" class="u-input-sm" placeholder="Your Name (Optional)" />
+        <input type="tel" id="cust-phone" class="u-input-sm" placeholder="Mobile # for SMS / WhatsApp bill" />
+      </div>
+
+      <!-- Payment Mode -->
+      <div class="cart-payment-methods">
+        <label class="pay-method-title">Select Payment Mode:</label>
+        <div class="pay-methods-grid">
+          <label class="pay-option active">
+            <input type="radio" name="pay-method" value="UPI" checked />
+            <span class="pay-label">
+              <span class="pay-icon">📱</span> UPI (GPay/PhonePe)
+            </span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="pay-method" value="Cash" />
+            <span class="pay-label">
+              <span class="pay-icon">💵</span> Pay at Counter
+            </span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="pay-method" value="Card" />
+            <span class="pay-label">
+              <span class="pay-icon">💳</span> Card / POS
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Checkout Button -->
+      <button class="u-btn-checkout" id="btn-place-order">
+        <span class="checkout-spinner" id="checkout-spinner" style="display:none;">⏳</span>
+        <span>Confirm & Place Order (<span id="btn-checkout-amount">₹0</span>)</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══ ORDER SUCCESS MODAL ═══════════════════════════════════════ -->
+  <div class="u-modal-overlay" id="order-modal-overlay">
+    <div class="u-modal-card">
+      <div class="modal-success-icon">☕✓</div>
+      <h2>Order Successfully Placed!</h2>
+      <p class="modal-order-sub">Our kitchen has received your ticket and is preparing your freshly handcrafted items.</p>
+      
+      <div class="modal-ticket" id="modal-ticket-details">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="u-btn-primary" id="btn-view-tracker">Track Order Status →</button>
+        <button class="u-btn-outline" id="btn-modal-close">Done & Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FLOATING DUAL-PANEL SWITCHER ═════════════════════════════ -->
+  <div class="panel-floating-dock" id="panel-dock">
+    <div class="dock-label">Window Panels:</div>
+    <span class="dock-pill active">👤 User Panel</span>
+    <a href="owner-panel.html" class="dock-pill dock-pill--owner">👑 Owner Portal</a>
+  </div>
+
+  <!-- ══ TOAST NOTIFICATION ════════════════════════════════════════ -->
+  <div class="u-toast" id="u-toast" role="alert">
+    <span class="u-toast-icon">✓</span>
+    <span class="u-toast-msg" id="u-toast-msg">Item added!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./menu-data.js"></script>
+  <script src="./user-panel.js"></script>
+</body>
+</html>

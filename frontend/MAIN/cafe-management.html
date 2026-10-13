@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="DAS CAFE — Comprehensive Cafe Management System. Inventory, billing, P&L, and daily reconciliation." />
+  <title>DAS CAFE — Management System</title>
+  <link rel="icon" href="./DAS.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./cafe-management.css" />
+</head>
+<body>
+  <!-- ══ HEADER ═══════════════════════════════════════════════════ -->
+  <header class="cms-header" id="cms-header">
+    <div class="cms-header-inner">
+      <a href="index.html" class="cms-logo" aria-label="Back to DAS CAFE">
+        <img src="./DAS.png" class="cms-logo-img" alt="" />
+        DAS <span>CAFE</span>
+      </a>
+      <h1 class="cms-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Management System
+      </h1>
+      <div class="cms-header-actions">
+        <span class="cms-clock" id="cms-clock"></span>
+        <a href="owner-panel.html" class="cms-btn cms-btn-outline" style="text-decoration:none;" title="Return to Owner & Management Hub">
+          👑 Owner Hub
+        </a>
+        <a href="user-panel.html" class="cms-btn cms-btn-outline" style="text-decoration:none;" title="View Customer Dining Panel">
+          👤 User Panel
+        </a>
+        <button class="cms-btn cms-btn-outline" id="btn-export-all" title="Export current sheet as CSV">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ SHEET TABS ═══════════════════════════════════════════════ -->
+  <nav class="cms-tabs" id="cms-tabs" role="tablist" aria-label="Sheet tabs">
+    <div class="cms-tabs-scroll">
+      <button class="tab active" data-sheet="dashboard" role="tab" aria-selected="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        Dashboard
+      </button>
+      <button class="tab" data-sheet="settings" role="tab">⚙️ Settings</button>
+      <button class="tab" data-sheet="ingredients" role="tab">🧂 Ingredients</button>
+      <button class="tab" data-sheet="menu" role="tab">🍽️ Menu</button>
+      <button class="tab" data-sheet="recipes" role="tab">📋 Recipes</button>
+      <button class="tab" data-sheet="sales_log" role="tab">🧾 Sales Log</button>
+      <button class="tab" data-sheet="purchases" role="tab">📦 Purchases</button>
+      <button class="tab" data-sheet="cashout" role="tab">💸 CashOut</button>
+      <button class="tab" data-sheet="wastage" role="tab">🗑️ Wastage</button>
+      <button class="tab" data-sheet="stock" role="tab">📊 Stock</button>
+      <button class="tab" data-sheet="daily" role="tab">📅 Daily</button>
+      <button class="tab" data-sheet="monthly" role="tab">📈 Monthly P&L</button>
+      <button class="tab" data-sheet="audit" role="tab">🔍 Audit</button>
+    </div>
+  </nav>
+
+  <!-- ══ MAIN CONTENT AREA ════════════════════════════════════════ -->
+  <main class="cms-main" id="cms-main">
+
+    <!-- ── DASHBOARD SHEET ──────────────────────────────────────── -->
+    <section class="sheet active" id="sheet-dashboard" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">📊 Daily Dashboard</h2>
+        <div class="sheet-toolbar-right">
+          <label>View Date:
+            <input type="date" id="dash-date" class="cms-input" />
+          </label>
+          <button class="cms-btn cms-btn-primary" id="dash-refresh">Refresh</button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi-card kpi-card--revenue">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-body">
+            <div class="kpi-label">Gross Revenue</div>
+            <div class="kpi-value" id="kpi-revenue">₹ 0</div>
+          </div>
+          <div class="kpi-glow"></div>
+        </div>
+        <div class="kpi-card kpi-card--orders">
+          <div class="kpi-icon">📦</div>
+          <div class="kpi-body">
+            <div class="kpi-label">Total Orders</div>
+            <div class="kpi-value" id="kpi-orders">0</div>
+          </div>
+          <div class="kpi-glow"></div>
+        </div>
+        <div class="kpi-card kpi-card--avg">
+          <div class="kpi-icon">📊</div>
+          <div class="kpi-body">
+            <div class="kpi-label">Avg Order Value</div>
+            <div class="kpi-value" id="kpi-avg">₹ 0</div>
+          </div>
+          <div class="kpi-glow"></div>
+        </div>
+        <div class="kpi-card kpi-card--contribution">
+          <div class="kpi-icon">📈</div>
+          <div class="kpi-body">
+            <div class="kpi-label">Contribution</div>
+            <div class="kpi-value" id="kpi-contribution">₹ 0</div>
+          </div>
+          <div class="kpi-glow"></div>
+        </div>
+        <div class="kpi-card kpi-card--cash">
+          <div class="kpi-icon">💵</div>
+          <div class="kpi-body">
+            <div class="kpi-label">Cash Balance</div>
+            <div class="kpi-value" id="kpi-cash">₹ 0</div>
+          </div>
+          <div class="kpi-glow"></div>
+        </div>
+        <div class="kpi-card kpi-card--waste">
+          <div class="kpi-icon">🗑️</div>
+          <div class="kpi-body">
+            <div class="kpi-label">Wastage</div>
+            <div class="kpi-value" id="kpi-wastage">₹ 0</div>
+          </div>
+          <div class="kpi-glow"></div>
+        </div>
+      </div>
+
+      <!-- Dashboard Charts Row -->
+      <div class="dash-charts-row">
+        <div class="dash-chart-card">
+          <h3 class="dash-chart-title">🏆 Top Sellers Today</h3>
+          <div class="dash-chart-body" id="dash-top-sellers"></div>
+        </div>
+        <div class="dash-chart-card">
+          <h3 class="dash-chart-title">💳 Payment Split</h3>
+          <div class="dash-chart-body" id="dash-payment-split"></div>
+        </div>
+        <div class="dash-chart-card">
+          <h3 class="dash-chart-title">⏰ Sales by Hour</h3>
+          <div class="dash-chart-body" id="dash-hourly-sales"></div>
+        </div>
+      </div>
+
+      <!-- Cash Reconciliation Summary -->
+      <div class="recon-card">
+        <h3 class="recon-title">💰 Cash Reconciliation</h3>
+        <div class="recon-grid" id="recon-grid">
+          <div class="recon-item">
+            <span class="recon-label">Opening Cash</span>
+            <span class="recon-value" id="recon-opening">₹ 0</span>
+          </div>
+          <div class="recon-item recon-item--plus">
+            <span class="recon-label">+ Cash Sales</span>
+            <span class="recon-value" id="recon-cash-sales">₹ 0</span>
+          </div>
+          <div class="recon-item recon-item--minus">
+            <span class="recon-label">− Cash Paid Out</span>
+            <span class="recon-value" id="recon-cash-out">₹ 0</span>
+          </div>
+          <div class="recon-item recon-item--total">
+            <span class="recon-label">= Expected Closing</span>
+            <span class="recon-value" id="recon-expected">₹ 0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SETTINGS SHEET ───────────────────────────────────────── -->
+    <section class="sheet" id="sheet-settings" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">⚙️ Settings — Single Source of Truth</h2>
+        <button class="cms-btn cms-btn-primary" id="settings-save">Save Settings</button>
+      </div>
+      <div class="settings-grid">
+        <fieldset class="settings-group">
+          <legend>📅 Period</legend>
+          <label>Month Start <input type="date" id="set-month-start" class="cms-input" /></label>
+          <label>Month End <input type="date" id="set-month-end" class="cms-input" /></label>
+        </fieldset>
+        <fieldset class="settings-group">
+          <legend>🎯 Financial Targets (30/30/30/10)</legend>
+          <label>Food Cost % <input type="number" id="set-food-cost" class="cms-input" value="30" min="0" max="100" step="1" /></label>
+          <label>Labour Cost % <input type="number" id="set-labour-cost" class="cms-input" value="30" min="0" max="100" step="1" /></label>
+          <label>Operating Cost % <input type="number" id="set-operating-cost" class="cms-input" value="30" min="0" max="100" step="1" /></label>
+          <label>Profit Target % <input type="number" id="set-profit-target" class="cms-input" value="10" min="0" max="100" step="1" /></label>
+        </fieldset>
+        <fieldset class="settings-group">
+          <legend>💵 Cash Management</legend>
+          <label>Opening Cash (₹) <input type="number" id="set-opening-cash" class="cms-input" value="2000" min="0" /></label>
+          <label>Cash Tolerance (₹) <input type="number" id="set-cash-tolerance" class="cms-input" value="50" min="0" /></label>
+        </fieldset>
+        <fieldset class="settings-group">
+          <legend>🏷️ Tax Settings</legend>
+          <label>Tax Mode
+            <select id="set-tax-mode" class="cms-input">
+              <option value="inclusive">Tax Inclusive</option>
+              <option value="exclusive">Tax Exclusive</option>
+              <option value="none">No Tax</option>
+            </select>
+          </label>
+          <label>GST Rate (%) <input type="number" id="set-gst-rate" class="cms-input" value="5" min="0" max="28" step="0.5" /></label>
+        </fieldset>
+        <fieldset class="settings-group">
+          <legend>📦 Wastage Allowance</legend>
+          <label>Default Wastage Allowance (%) <input type="number" id="set-wastage-allowance" class="cms-input" value="3" min="0" max="20" step="0.5" /></label>
+        </fieldset>
+      </div>
+    </section>
+
+    <!-- ── INGREDIENTS SHEET ────────────────────────────────────── -->
+    <section class="sheet" id="sheet-ingredients" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">🧂 Ingredients — Price List</h2>
+        <div class="sheet-toolbar-right">
+          <input type="text" id="ing-search" class="cms-input" placeholder="Search ingredients..." />
+          <button class="cms-btn cms-btn-primary" id="ing-add">+ Add Ingredient</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-ingredients">
+          <thead>
+            <tr>
+              <th>ING ID</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Unit</th>
+              <th>Pack Size</th>
+              <th>Pack Price (₹)</th>
+              <th class="formula-col">Cost/Unit (₹)</th>
+              <th>Min Stock</th>
+              <th>Reorder Qty</th>
+              <th>Shelf Life (days)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-ingredients"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── MENU SHEET ───────────────────────────────────────────── -->
+    <section class="sheet" id="sheet-menu" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">🍽️ Menu — Costing Cards</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-primary" id="menu-add">+ Add Item</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-menu">
+          <thead>
+            <tr>
+              <th>ITM ID</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Selling Price (₹)</th>
+              <th class="formula-col">Direct Cost (₹)</th>
+              <th class="formula-col">Price Floor (₹)</th>
+              <th class="formula-col">Contribution (₹)</th>
+              <th>Prep Minutes</th>
+              <th class="formula-col">Units Sold</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-menu"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── RECIPES SHEET ────────────────────────────────────────── -->
+    <section class="sheet" id="sheet-recipes" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">📋 Recipes — Item-to-Ingredient Mapping</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-primary" id="recipe-add">+ Add Recipe Line</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-recipes">
+          <thead>
+            <tr>
+              <th>Item ID</th>
+              <th>Item Name</th>
+              <th>Ingredient ID</th>
+              <th>Ingredient Name</th>
+              <th>Qty per Serving</th>
+              <th>Unit</th>
+              <th class="formula-col">Line Cost (₹)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-recipes"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── SALES_LOG SHEET ──────────────────────────────────────── -->
+    <section class="sheet" id="sheet-sales_log" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">🧾 Sales Log — Every Bill Line</h2>
+        <div class="sheet-toolbar-right">
+          <input type="text" id="sales-search" class="cms-input" placeholder="Search bills..." />
+          <select id="sales-status-filter" class="cms-input">
+            <option value="all">All Status</option>
+            <option value="Sold">Sold</option>
+            <option value="Wasted">Wasted</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Refund">Refund</option>
+          </select>
+          <button class="cms-btn cms-btn-primary" id="sales-add">+ New Sale</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-sales_log">
+          <thead>
+            <tr>
+              <th>Bill No.</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Item ID</th>
+              <th>Item Name</th>
+              <th>Qty</th>
+              <th>Price (₹)</th>
+              <th>Discount (₹)</th>
+              <th class="formula-col">Net (₹)</th>
+              <th>Status</th>
+              <th>Payment Mode</th>
+              <th>Entered By</th>
+              <th>Reason</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-sales_log"></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span class="table-summary" id="sales-summary"></span>
+      </div>
+    </section>
+
+    <!-- ── PURCHASES SHEET ──────────────────────────────────────── -->
+    <section class="sheet" id="sheet-purchases" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">📦 Purchases — Supplier Invoices</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-primary" id="purchase-add">+ Add Purchase</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-purchases">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Supplier</th>
+              <th>Invoice No.</th>
+              <th>Ingredient ID</th>
+              <th>Ingredient Name</th>
+              <th>Packs</th>
+              <th class="formula-col">Quantity</th>
+              <th>Cost (₹)</th>
+              <th class="formula-col">Unit Cost (₹)</th>
+              <th class="formula-col">vs Price List</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-purchases"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── CASHOUT SHEET ────────────────────────────────────────── -->
+    <section class="sheet" id="sheet-cashout" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">💸 CashOut — Outgoing Payments</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-primary" id="cashout-add">+ Add Payment</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-cashout">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount (₹)</th>
+              <th>Mode</th>
+              <th>Reference</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-cashout"></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span class="table-summary" id="cashout-summary"></span>
+      </div>
+    </section>
+
+    <!-- ── WASTAGE SHEET ────────────────────────────────────────── -->
+    <section class="sheet" id="sheet-wastage" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">🗑️ Wastage — Raw Ingredient Waste Log</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-primary" id="wastage-add">+ Log Waste</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-wastage">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Ingredient ID</th>
+              <th>Ingredient Name</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th class="formula-col">Value (₹)</th>
+              <th>Reason</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-wastage"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── STOCK SHEET ──────────────────────────────────────────── -->
+    <section class="sheet" id="sheet-stock" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">📊 Stock — Reconciliation</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-outline" id="stock-recalc">🔄 Recalculate</button>
+          <button class="cms-btn cms-btn-primary" id="stock-physical">📝 Enter Physical Count</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-stock">
+          <thead>
+            <tr>
+              <th>ING ID</th>
+              <th>Name</th>
+              <th>Unit</th>
+              <th class="formula-col">Opening</th>
+              <th class="formula-col">Purchases</th>
+              <th class="formula-col">Recipe Usage</th>
+              <th class="formula-col">Wastage</th>
+              <th class="formula-col">Expected Closing</th>
+              <th>Physical Count</th>
+              <th class="formula-col">Variance</th>
+              <th class="formula-col">Reorder?</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-stock"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── DAILY RECONCILIATION SHEET ───────────────────────────── -->
+    <section class="sheet" id="sheet-daily" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">📅 Daily Reconciliation</h2>
+        <div class="sheet-toolbar-right">
+          <label>Date: <input type="date" id="daily-date" class="cms-input" /></label>
+          <button class="cms-btn cms-btn-primary" id="daily-calc">Calculate</button>
+        </div>
+      </div>
+      <div class="recon-full-grid" id="daily-recon-grid">
+        <!-- filled by JS -->
+      </div>
+    </section>
+
+    <!-- ── MONTHLY P&L SHEET ────────────────────────────────────── -->
+    <section class="sheet" id="sheet-monthly" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">📈 Monthly P&L — Profit & Loss Statement</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-primary" id="monthly-calc">Generate P&L</button>
+        </div>
+      </div>
+      <div class="pnl-container" id="pnl-container">
+        <!-- filled by JS -->
+      </div>
+    </section>
+
+    <!-- ── AUDIT SHEET ──────────────────────────────────────────── -->
+    <section class="sheet" id="sheet-audit" role="tabpanel">
+      <div class="sheet-toolbar">
+        <h2 class="sheet-title">🔍 Audit Trail — 24-Line Financial Report</h2>
+        <div class="sheet-toolbar-right">
+          <button class="cms-btn cms-btn-primary" id="audit-generate">Generate Audit</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="cms-table" id="tbl-audit">
+          <thead>
+            <tr>
+              <th>Line</th>
+              <th>Description</th>
+              <th class="formula-col">Reported (₹)</th>
+              <th class="formula-col">Calculated (₹)</th>
+              <th class="formula-col">Difference (₹)</th>
+              <th class="formula-col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-audit"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ MODAL OVERLAY ════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Add New</h3>
+        <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- dynamic form content -->
+      </div>
+      <div class="modal-footer">
+        <button class="cms-btn cms-btn-outline" id="modal-cancel">Cancel</button>
+        <button class="cms-btn cms-btn-primary" id="modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TOAST ════════════════════════════════════════════════════ -->
+  <div class="cms-toast" id="cms-toast" aria-live="polite">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg" id="cms-toast-msg">Saved successfully</span>
+  </div>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════════════ -->
+  <footer class="cms-footer">
+    <p>© 2026 DAS CAFE · Management System · <a href="index.html">Back to Website</a> · <a href="sales-dashboard.html">Sales Dashboard</a></p>
+  </footer>
+
+  <script src="./menu-data.js"></script>
+  <script src="./cafe-management.js"></script>
+</body>
+</html>

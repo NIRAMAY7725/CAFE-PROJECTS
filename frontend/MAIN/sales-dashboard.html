@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="DAS CAFE — Sales Dashboard. View, search, and export 1B+ sale records." />
+  <title>DAS CAFE — Sales Dashboard</title>
+  <link rel="icon" href="./DAS.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./sales-dashboard.css" />
+</head>
+<body>
+  <!-- ══ TOP BAR ═══════════════════════════════════════════ -->
+  <header class="dash-header" id="dash-header">
+    <div class="dash-header-inner">
+      <a href="index.html" class="dash-logo" aria-label="Back to DAS CAFE">
+        <img src="./DAS.png" class="dash-logo-img" alt="" />
+        DAS <span>CAFE</span>
+      </a>
+      <h1 class="dash-title">Sales Dashboard</h1>
+      <div class="dash-header-actions">
+        <button class="dash-btn dash-btn-outline" id="btn-refresh" aria-label="Refresh data">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+          Refresh
+        </button>
+        <button class="dash-btn dash-btn-primary" id="btn-export" aria-label="Export CSV">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dash-main">
+    <!-- ══ STAT CARDS ═══════════════════════════════════════ -->
+    <section class="stats-grid" id="stats-grid" aria-label="Key statistics">
+      <div class="stat-card stat-card--total">
+        <div class="stat-card__icon">📦</div>
+        <div class="stat-card__body">
+          <div class="stat-card__label">Total Orders</div>
+          <div class="stat-card__value" id="stat-total-orders">—</div>
+        </div>
+        <div class="stat-card__glow"></div>
+      </div>
+      <div class="stat-card stat-card--revenue">
+        <div class="stat-card__icon">💰</div>
+        <div class="stat-card__body">
+          <div class="stat-card__label">Total Revenue</div>
+          <div class="stat-card__value" id="stat-total-revenue">—</div>
+        </div>
+        <div class="stat-card__glow"></div>
+      </div>
+      <div class="stat-card stat-card--avg">
+        <div class="stat-card__icon">📊</div>
+        <div class="stat-card__body">
+          <div class="stat-card__label">Avg Order Value</div>
+          <div class="stat-card__value" id="stat-avg-value">—</div>
+        </div>
+        <div class="stat-card__glow"></div>
+      </div>
+      <div class="stat-card stat-card--today">
+        <div class="stat-card__icon">☀️</div>
+        <div class="stat-card__body">
+          <div class="stat-card__label">Today's Orders</div>
+          <div class="stat-card__value" id="stat-today-orders">—</div>
+        </div>
+        <div class="stat-card__glow"></div>
+      </div>
+    </section>
+
+    <!-- ══ CHARTS ROW ════════════════════════════════════════ -->
+    <section class="charts-row" aria-label="Charts">
+      <!-- Top Items -->
+      <div class="chart-card" id="chart-top-items">
+        <h2 class="chart-card__title">🏆 Top Selling Items</h2>
+        <div class="chart-card__body" id="top-items-bars"></div>
+      </div>
+      <!-- Category Breakdown -->
+      <div class="chart-card" id="chart-categories">
+        <h2 class="chart-card__title">📂 Sales by Category</h2>
+        <div class="chart-card__body" id="category-bars"></div>
+      </div>
+      <!-- Payment Methods -->
+      <div class="chart-card" id="chart-payments">
+        <h2 class="chart-card__title">💳 Payment Methods</h2>
+        <div class="chart-card__body" id="payment-bars"></div>
+      </div>
+    </section>
+
+    <!-- ══ DAILY TREND ═══════════════════════════════════════ -->
+    <section class="chart-card chart-card--wide" id="chart-trend" aria-label="7-day trend">
+      <h2 class="chart-card__title">📈 Last 7 Days Revenue Trend</h2>
+      <div class="chart-card__body trend-chart" id="trend-bars"></div>
+    </section>
+
+    <!-- ══ SALES TABLE ═══════════════════════════════════════ -->
+    <section class="table-section" aria-label="Sales records">
+      <div class="table-toolbar">
+        <div class="table-toolbar-left">
+          <h2 class="table-title">Sale Records</h2>
+          <span class="table-count" id="table-count"></span>
+        </div>
+        <div class="table-toolbar-right">
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" class="search-input" placeholder="Search orders, items, customers…" />
+          </div>
+          <select id="filter-category" class="dash-select">
+            <option value="all">All Categories</option>
+            <option value="tea">🍵 Tea</option>
+            <option value="coffee">☕ Coffee</option>
+            <option value="sandwich">🥪 Sandwich</option>
+            <option value="south">🥞 South Indian</option>
+            <option value="cold">🧊 Cold Drink</option>
+            <option value="water">💧 Water</option>
+          </select>
+          <select id="filter-payment" class="dash-select">
+            <option value="all">All Payments</option>
+            <option value="cash">💵 Cash</option>
+            <option value="upi">📱 UPI</option>
+            <option value="card">💳 Card</option>
+            <option value="gpay">Google Pay</option>
+            <option value="phonpe">PhonePe</option>
+            <option value="paytm">Paytm</option>
+          </select>
+          <input type="date" id="filter-date-from" class="dash-input" title="From date" />
+          <input type="date" id="filter-date-to" class="dash-input" title="To date" />
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="sales-table" id="sales-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th>Customer</th>
+              <th>Payment</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="sales-tbody">
+            <tr><td colspan="9" class="table-loading">Loading sale records…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination">
+        <button class="page-btn" id="page-prev" disabled>← Previous</button>
+        <span class="page-info" id="page-info">Page 1</span>
+        <button class="page-btn" id="page-next">Next →</button>
+      </div>
+    </section>
+
+    <!-- ══ POS LINK ═════════════════════════════════════ -->
+    <section class="form-section" aria-label="Point of Sale">
+      <div class="chart-card" style="text-align: center; padding: 40px;">
+        <h2 class="chart-card__title" style="margin-bottom: 10px;">Looking to ring up an order?</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">Use the new dedicated Point of Sale terminal for ultra-fast ordering.</p>
+        <a href="assistant-pos.html" class="dash-btn dash-btn-primary" style="display: inline-block; text-decoration: none;">
+          🛒 Open Cafe POS
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══ FOOTER ════════════════════════════════════════════ -->
+  <footer class="dash-footer">
+    <p>© 2026 DAS CAFE · Sales Dashboard · <a href="index.html">Back to Website</a></p>
+  </footer>
+
+  <script src="./sales-dashboard.js"></script>
+</body>
+</html>

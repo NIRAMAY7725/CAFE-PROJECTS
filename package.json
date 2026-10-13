@@ -1,0 +1,33 @@
+{
+  "name": "das-cafe-backend",
+  "version": "1.0.0",
+  "description": "DAS CAFE — Full-Featured REST API and Web Server with 17 Backend Features",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "test:api": "node backend/tests/test-api.js"
+  },
+  "keywords": [
+    "das-cafe",
+    "express",
+    "mongodb",
+    "jwt",
+    "rbac"
+  ],
+  "author": "NIRAMAY",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.2",
+    "morgan": "^1.12.1"
+  }
+}

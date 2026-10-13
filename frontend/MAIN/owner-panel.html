@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="DAS CAFE — Cafe Owner & Management Window Panel. Live KDS orders, express POS terminal, inventory alerts, 30/30/30/10 financial health, and 13-sheet management suite." />
+  <title>DAS CAFE — Owner & Management Hub</title>
+  <link rel="icon" href="./DAS.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./owner-panel.css" />
+</head>
+<body>
+
+  <!-- ══ PIN SECURITY GATE MODAL ══════════════════════════════════ -->
+  <div class="pin-gate-overlay" id="pin-gate" role="dialog" aria-modal="true" aria-label="Owner PIN Authentication">
+    <div class="pin-card">
+      <div class="pin-badge-crown">👑</div>
+      <h2 class="pin-title">Owner & Management Access</h2>
+      <p class="pin-subtitle">Restricted executive console for DAS CAFE owners and managers.</p>
+
+      <div class="pin-display">
+        <span class="pin-dot" id="pdot-1"></span>
+        <span class="pin-dot" id="pdot-2"></span>
+        <span class="pin-dot" id="pdot-3"></span>
+        <span class="pin-dot" id="pdot-4"></span>
+      </div>
+
+      <div class="pin-error" id="pin-error-msg">Incorrect PIN. Please try again.</div>
+
+      <!-- Numeric Keypad -->
+      <div class="pin-keypad">
+        <button class="key-btn" data-val="1">1</button>
+        <button class="key-btn" data-val="2">2</button>
+        <button class="key-btn" data-val="3">3</button>
+        <button class="key-btn" data-val="4">4</button>
+        <button class="key-btn" data-val="5">5</button>
+        <button class="key-btn" data-val="6">6</button>
+        <button class="key-btn" data-val="7">7</button>
+        <button class="key-btn" data-val="8">8</button>
+        <button class="key-btn" data-val="9">9</button>
+        <button class="key-btn key-clear" id="btn-pin-clear">C</button>
+        <button class="key-btn" data-val="0">0</button>
+        <button class="key-btn key-del" id="btn-pin-del">⌫</button>
+      </div>
+
+      <!-- 1-Click Demo Unlock for seamless testing -->
+      <div class="pin-demo-row">
+        <button class="pin-demo-btn" id="btn-demo-unlock">
+          ⚡ 1-Click Demo Unlock (PIN: 1234)
+        </button>
+      </div>
+
+      <div class="pin-footer-links">
+        <a href="user-panel.html" class="pin-back-link">← Switch to Customer Dining Panel</a>
+        <a href="index.html" class="pin-back-link">Return to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ OWNER MAIN WRAPPER ═══════════════════════════════════════ -->
+  <div class="owner-app" id="owner-app" style="display:none;">
+
+    <!-- ── EXECUTIVE HEADER ────────────────────────────────────── -->
+    <header class="o-header" id="o-header">
+      <div class="o-header-inner">
+        <div class="o-header-left">
+          <a href="index.html" class="o-logo" title="DAS CAFE Home">
+            <img src="./DAS.png" alt="DAS CAFE" class="o-logo-img" />
+            <div class="o-logo-title">
+              <span>DAS <em>CAFE</em></span>
+              <small>👑 Owner & Operations Console</small>
+            </div>
+          </a>
+        </div>
+
+        <!-- Center: Store status & live time -->
+        <div class="o-header-center">
+          <div class="store-toggle-box">
+            <span class="store-label">Cafe Operations:</span>
+            <button class="store-status-btn open" id="btn-toggle-store">
+              <span class="store-dot"></span>
+              <span id="store-status-text">OPEN (Accepting Orders)</span>
+            </button>
+          </div>
+          <div class="o-clock-pill">
+            <span class="clock-icon">🕒</span>
+            <span id="o-live-clock">12:00:00 PM</span>
+          </div>
+        </div>
+
+        <!-- Right: Actions & Panel Switcher -->
+        <div class="o-header-right">
+          <!-- Switch to Customer Panel (open side by side or jump) -->
+          <a href="user-panel.html" class="o-btn-user-panel" target="_blank" title="Open Customer Dining Panel in new tab">
+            <span>👤</span>
+            <span>Customer Panel ↗</span>
+          </a>
+
+          <!-- Direct Link to 13-Sheet Spreadsheet -->
+          <a href="cafe-management.html" class="o-btn-action" title="Open Complete 13-Sheet Management Spreadsheet">
+            <span>📊</span>
+            <span>Spreadsheet Engine</span>
+          </a>
+
+          <!-- Lock Button -->
+          <button class="o-btn-lock" id="btn-lock-session" title="Lock Owner Console">
+            <span>🔒</span>
+            <span>Lock</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── KPI HUD BAR ─────────────────────────────────────────── -->
+    <section class="o-kpi-bar">
+      <div class="o-kpi-grid">
+        <div class="kpi-box kpi-box--revenue">
+          <div class="kpi-top">
+            <span class="kpi-title">Today's Revenue</span>
+            <span class="kpi-icon">💰</span>
+          </div>
+          <div class="kpi-num" id="kpi-rev-today">₹ 0</div>
+          <div class="kpi-sub" id="kpi-rev-sub">Across all payment channels</div>
+        </div>
+
+        <div class="kpi-box kpi-box--orders">
+          <div class="kpi-top">
+            <span class="kpi-title">Total Orders</span>
+            <span class="kpi-icon">🧾</span>
+          </div>
+          <div class="kpi-num" id="kpi-orders-count">0</div>
+          <div class="kpi-sub" id="kpi-orders-sub">Walk-in POS + Table App</div>
+        </div>
+
+        <div class="kpi-box kpi-box--active">
+          <div class="kpi-top">
+            <span class="kpi-title">Active Kitchen Queue</span>
+            <span class="kpi-badge-pulse" id="kpi-active-badge">0 Live</span>
+          </div>
+          <div class="kpi-num" id="kpi-active-count">0</div>
+          <div class="kpi-sub">Pending preparation/serving</div>
+        </div>
+
+        <div class="kpi-box kpi-box--aov">
+          <div class="kpi-top">
+            <span class="kpi-title">Avg Order Value (AOV)</span>
+            <span class="kpi-icon">📈</span>
+          </div>
+          <div class="kpi-num" id="kpi-aov">₹ 0</div>
+          <div class="kpi-sub">Average ticket size</div>
+        </div>
+
+        <div class="kpi-box kpi-box--cash">
+          <div class="kpi-top">
+            <span class="kpi-title">Cash Register Tolerance</span>
+            <span class="kpi-icon">💵</span>
+          </div>
+          <div class="kpi-num status-balanced" id="kpi-cash-status">BALANCED</div>
+          <div class="kpi-sub" id="kpi-cash-detail">Within ±₹50 target</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── NAVIGATION TABS ─────────────────────────────────────── -->
+    <nav class="o-nav-tabs">
+      <div class="o-nav-container">
+        <button class="o-tab-btn active" data-tab="kds">
+          <span class="tab-badge-bubble" id="tab-kds-badge" style="display:none;">0</span>
+          <span>🛎️</span> Live Orders & KDS
+        </button>
+        <button class="o-tab-btn" data-tab="pos">
+          <span>🛒</span> Express POS Terminal
+        </button>
+        <button class="o-tab-btn" data-tab="stock">
+          <span>📦</span> Inventory & Stock
+        </button>
+        <button class="o-tab-btn" data-tab="expenses">
+          <span>💸</span> Expenses & Cash Out
+        </button>
+        <button class="o-tab-btn" data-tab="reconcile">
+          <span>⚖️</span> 30/30/30/10 Financial Health
+        </button>
+        <button class="o-tab-btn" data-tab="suite">
+          <span>🗂️</span> Management Suite (13 Sheets)
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── WORKSPACE CONTENT PANELS ────────────────────────────── -->
+    <main class="o-main-area">
+
+      <!-- ── TAB 1: LIVE ORDERS & KDS ──────────────────────────── -->
+      <section class="o-panel active" id="opanel-kds">
+        <div class="panel-header-row">
+          <div>
+            <h2>🛎️ Kitchen Display & Live Orders Board</h2>
+            <p>Real-time queue of incoming customer app orders and counter sales. Updates automatically.</p>
+          </div>
+          <div class="kds-filter-group">
+            <button class="kds-filter-btn active" data-filter="all">All Orders</button>
+            <button class="kds-filter-btn" data-filter="new">New / Received</button>
+            <button class="kds-filter-btn" data-filter="preparing">Preparing</button>
+            <button class="kds-filter-btn" data-filter="ready">Ready for Counter</button>
+            <button class="kds-filter-btn" data-filter="completed">Completed</button>
+            <button class="o-btn-outline-sm" id="btn-refresh-kds">🔄 Refresh</button>
+          </div>
+        </div>
+
+        <div class="kds-orders-grid" id="kds-orders-grid">
+          <!-- Dynamic live order cards rendered here -->
+        </div>
+      </section>
+
+      <!-- ── TAB 2: EXPRESS POS TERMINAL ───────────────────────── -->
+      <section class="o-panel" id="opanel-pos">
+        <div class="pos-workspace-layout">
+          <!-- Left: Menu Item Picker -->
+          <div class="pos-item-picker">
+            <div class="pos-cat-filter" id="pos-cat-filters">
+              <button class="pos-cat-btn active" data-cat="all">All Items</button>
+              <button class="pos-cat-btn" data-cat="coffee">☕ Coffee</button>
+              <button class="pos-cat-btn" data-cat="tea">🫖 Tea</button>
+              <button class="pos-cat-btn" data-cat="south">🥞 South Indian</button>
+              <button class="pos-cat-btn" data-cat="sandwich">🥪 Sandwiches</button>
+              <button class="pos-cat-btn" data-cat="cold">🥤 Cold Drinks</button>
+              <button class="pos-cat-btn" data-cat="water">💧 Water</button>
+            </div>
+
+            <div class="pos-items-touch-grid" id="pos-items-grid">
+              <!-- Touch buttons for items -->
+            </div>
+          </div>
+
+          <!-- Right: Order Ticket & Tender Register -->
+          <div class="pos-ticket-panel">
+            <div class="ticket-header">
+              <h3>Express Counter Ticket</h3>
+              <button class="ticket-clear-btn" id="btn-pos-clear">Clear</button>
+            </div>
+
+            <div class="ticket-customer-row">
+              <input type="text" id="pos-cust-name" class="o-input-sm" placeholder="Customer Name (Walk-in)" value="Walk-in Customer" />
+              <select id="pos-service-mode" class="o-input-sm">
+                <option value="Counter Takeaway">Takeaway</option>
+                <option value="Dine-In Table 01">Table 01</option>
+                <option value="Dine-In Table 02">Table 02</option>
+                <option value="Dine-In Table 03">Table 03</option>
+                <option value="Dine-In Table 04">Table 04</option>
+              </select>
+            </div>
+
+            <div class="ticket-body" id="pos-ticket-body">
+              <div class="ticket-empty">Select items from the left to build order bill</div>
+            </div>
+
+            <div class="ticket-footer">
+              <div class="ticket-total-row">
+                <span>Subtotal:</span>
+                <span id="pos-subtotal" class="font-mono">₹ 0</span>
+              </div>
+              <div class="ticket-total-row total-highlight">
+                <span>Grand Total:</span>
+                <span id="pos-grand-total" class="font-mono">₹ 0</span>
+              </div>
+
+              <div class="pos-payment-group">
+                <label>Payment Method:</label>
+                <div class="pos-pay-btns">
+                  <button type="button" class="pos-pay-btn active" data-method="Cash">💵 Cash</button>
+                  <button type="button" class="pos-pay-btn" data-method="UPI">📱 UPI QR</button>
+                  <button type="button" class="pos-pay-btn" data-method="Card">💳 Card</button>
+                </div>
+              </div>
+
+              <button class="btn-pos-checkout" id="btn-pos-record-sale" disabled>
+                Complete Sale & Print Bill (₹0)
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 3: INVENTORY & STOCK ──────────────────────────── -->
+      <section class="o-panel" id="opanel-stock">
+        <div class="panel-header-row">
+          <div>
+            <h2>📦 Live Inventory & Stock Health</h2>
+            <p>Automatic ingredient consumption tracking from recipes. Instant reorder warnings.</p>
+          </div>
+          <button class="o-btn-primary" id="btn-open-restock-modal">+ Quick Stock-In / Restock</button>
+        </div>
+
+        <div class="stock-overview-grid" id="stock-overview-grid">
+          <!-- Stock status cards populated by JS -->
+        </div>
+
+        <div class="stock-table-card">
+          <div class="card-title">All Tracked Ingredients</div>
+          <table class="o-table" id="stock-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Ingredient</th>
+                <th>Category</th>
+                <th>Current Stock</th>
+                <th>Min Safety Level</th>
+                <th>Unit Price</th>
+                <th>Stock Status</th>
+                <th>Quick Restock</th>
+              </tr>
+            </thead>
+            <tbody id="stock-tbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── TAB 4: EXPENSES & CASH OUT ────────────────────────── -->
+      <section class="o-panel" id="opanel-expenses">
+        <div class="panel-header-row">
+          <div>
+            <h2>💸 Daily Expenses & Cash-Out Ledger</h2>
+            <p>Record all outgoing register payments, vendor dairy purchases, and petty cash.</p>
+          </div>
+        </div>
+
+        <div class="expenses-layout">
+          <!-- Form -->
+          <div class="expense-form-card">
+            <h3>Record New Cash-Out Expense</h3>
+            <form id="expense-form" class="expense-form">
+              <div class="form-group">
+                <label for="exp-desc">Expense Description / Vendor *</label>
+                <input type="text" id="exp-desc" class="o-input" placeholder="e.g. Daily Milk Delivery (20L), Gas Cylinder" required />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="exp-category">Expense Category *</label>
+                  <select id="exp-category" class="o-input" required>
+                    <option value="Dairy & Milk">Dairy & Milk Supplies</option>
+                    <option value="Fresh Vegetables">Fresh Vegetables & Spices</option>
+                    <option value="Packaging">Takeaway Packaging & Cups</option>
+                    <option value="Utilities">Gas, Water & Electricity</option>
+                    <option value="Staff Wages">Staff Daily Wages / Tips</option>
+                    <option value="Maintenance">Cleaning & Cafe Maintenance</option>
+                    <option value="Petty Cash">Miscellaneous Petty Cash</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="exp-amount">Amount (₹) *</label>
+                  <input type="number" id="exp-amount" class="o-input" placeholder="0" min="1" step="any" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="exp-paymode">Paid From *</label>
+                  <select id="exp-paymode" class="o-input">
+                    <option value="Cash Register">Cash Drawer (Petty Cash)</option>
+                    <option value="UPI Online">UPI / Bank Account</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="exp-by">Recorded By</label>
+                  <input type="text" id="exp-by" class="o-input" value="Owner / Manager" />
+                </div>
+              </div>
+
+              <button type="submit" class="o-btn-primary">Record Cash Out →</button>
+            </form>
+          </div>
+
+          <!-- Expense List -->
+          <div class="expense-list-card">
+            <div class="card-header-between">
+              <h3>Today's Outgoing Expenses</h3>
+              <span class="expense-total-badge" id="expense-today-total">Total: ₹ 0</span>
+            </div>
+            <div class="expense-stream" id="expense-stream">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 5: 30/30/30/10 FINANCIAL RECONCILIATION ────────── -->
+      <section class="o-panel" id="opanel-reconcile">
+        <div class="panel-header-row">
+          <div>
+            <h2>⚖️ 30/30/30/10 Financial Target Health & Daily Close</h2>
+            <p>Industry gold standard benchmark: 30% Food Cost, 30% Labor, 30% Operations, 10% Net Profit.</p>
+          </div>
+          <button class="o-btn-primary" id="btn-calc-recon">Calculate End-of-Day Close</button>
+        </div>
+
+        <div class="recon-grid">
+          <!-- 30/30/30/10 Target Meters -->
+          <div class="recon-card">
+            <h3>Financial Target Breakdown</h3>
+            <div class="target-bars-list">
+              <div class="target-bar-item">
+                <div class="t-bar-header">
+                  <span>Food Cost / COGS</span>
+                  <span class="font-mono" id="val-target-food">30.0% (Target: ≤ 30%)</span>
+                </div>
+                <div class="t-bar-track">
+                  <div class="t-bar-fill bar-food" id="bar-target-food" style="width: 30%;"></div>
+                </div>
+              </div>
+
+              <div class="target-bar-item">
+                <div class="t-bar-header">
+                  <span>Labor & Staff Cost</span>
+                  <span class="font-mono" id="val-target-labor">30.0% (Target: ≤ 30%)</span>
+                </div>
+                <div class="t-bar-track">
+                  <div class="t-bar-fill bar-labor" id="bar-target-labor" style="width: 30%;"></div>
+                </div>
+              </div>
+
+              <div class="target-bar-item">
+                <div class="t-bar-header">
+                  <span>Operating & Overhead Cost</span>
+                  <span class="font-mono" id="val-target-ops">30.0% (Target: ≤ 30%)</span>
+                </div>
+                <div class="t-bar-track">
+                  <div class="t-bar-fill bar-ops" id="bar-target-ops" style="width: 30%;"></div>
+                </div>
+              </div>
+
+              <div class="target-bar-item">
+                <div class="t-bar-header">
+                  <span>Net Profit Margin</span>
+                  <span class="font-mono" id="val-target-profit">10.0% (Target: ≥ 10%)</span>
+                </div>
+                <div class="t-bar-track">
+                  <div class="t-bar-fill bar-profit" id="bar-target-profit" style="width: 10%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cash Drawer Closing Reconciliation -->
+          <div class="recon-card">
+            <h3>Daily Cash Drawer Reconciliation</h3>
+            <div class="cash-calc-table">
+              <div class="c-calc-row">
+                <span>Opening Cash in Drawer:</span>
+                <span class="font-mono" id="recon-open-cash">₹ 2,000</span>
+              </div>
+              <div class="c-calc-row">
+                <span>Total Cash Sales Collected:</span>
+                <span class="font-mono text-green" id="recon-cash-sales">+ ₹ 0</span>
+              </div>
+              <div class="c-calc-row">
+                <span>Total Cash Expenses Paid Out:</span>
+                <span class="font-mono text-red" id="recon-cash-out">− ₹ 0</span>
+              </div>
+              <div class="c-calc-row total-highlight">
+                <span>Expected Cash at End of Day:</span>
+                <span class="font-mono" id="recon-expected-cash">₹ 2,000</span>
+              </div>
+            </div>
+
+            <div class="drawer-count-box">
+              <label for="recon-counted-cash">Enter Actual Counted Cash in Drawer (₹):</label>
+              <div style="display:flex; gap:10px; margin-top:6px;">
+                <input type="number" id="recon-counted-cash" class="o-input" placeholder="Counted Cash Amount" value="2000" />
+                <button class="o-btn-outline" id="btn-verify-drawer">Verify Tolerance</button>
+              </div>
+              <div class="recon-verdict" id="recon-verdict">
+                <span class="verdict-icon">✓</span>
+                <span id="recon-verdict-text">Cash drawer is balanced within tolerance limit (±₹50).</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TAB 6: 13-SHEET SPREADSHEET SUITE ─────────────────── -->
+      <section class="o-panel" id="opanel-suite">
+        <div class="panel-header-row">
+          <div>
+            <h2>🗂️ DAS CAFE Management System Suite</h2>
+            <p>Direct deep-links into each dedicated sheet of the full cafe management engine.</p>
+          </div>
+          <a href="cafe-management.html" class="o-btn-primary">Launch Master Spreadsheet Engine →</a>
+        </div>
+
+        <div class="suite-grid">
+          <a href="cafe-management.html#dashboard" class="suite-card">
+            <span class="suite-icon">📊</span>
+            <h4>Daily Dashboard</h4>
+            <p>Executive KPIs, daily revenue, average order value, target gauges.</p>
+          </a>
+          <a href="cafe-management.html#settings" class="suite-card">
+            <span class="suite-icon">⚙️</span>
+            <h4>Settings</h4>
+            <p>Single source of truth: 30/30/30/10 targets, opening cash, tax mode.</p>
+          </a>
+          <a href="cafe-management.html#ingredients" class="suite-card">
+            <span class="suite-icon">🧂</span>
+            <h4>Ingredients</h4>
+            <p>Item master, unit costs, pack sizes, and supplier price lists.</p>
+          </a>
+          <a href="cafe-management.html#menu" class="suite-card">
+            <span class="suite-icon">🍽️</span>
+            <h4>Menu Pricing</h4>
+            <p>Cost cards, contribution margins, prep times, and price floors.</p>
+          </a>
+          <a href="cafe-management.html#recipes" class="suite-card">
+            <span class="suite-icon">📋</span>
+            <h4>Recipes</h4>
+            <p>Yield ratios, portion consumption, and recipe line formulas.</p>
+          </a>
+          <a href="cafe-management.html#sales_log" class="suite-card">
+            <span class="suite-icon">🧾</span>
+            <h4>Sales Log</h4>
+            <p>Immutable audit trail of all bills, discounts, and payment methods.</p>
+          </a>
+          <a href="cafe-management.html#purchases" class="suite-card">
+            <span class="suite-icon">📦</span>
+            <h4>Purchases</h4>
+            <p>Vendor procurement records, invoice entries, and unit pricing.</p>
+          </a>
+          <a href="cafe-management.html#cashout" class="suite-card">
+            <span class="suite-icon">💸</span>
+            <h4>CashOut</h4>
+            <p>Petty cash ledger, staff wages, utilities, and daily payouts.</p>
+          </a>
+          <a href="cafe-management.html#wastage" class="suite-card">
+            <span class="suite-icon">🗑️</span>
+            <h4>Wastage</h4>
+            <p>Spoilage, spillage, and expired inventory cost tracking.</p>
+          </a>
+          <a href="cafe-management.html#stock" class="suite-card">
+            <span class="suite-icon">📊</span>
+            <h4>Stock</h4>
+            <p>Perpetual stock levels: Opening + Purchases − Sold − Wasted.</p>
+          </a>
+          <a href="cafe-management.html#daily" class="suite-card">
+            <span class="suite-icon">📅</span>
+            <h4>Daily Reconciliation</h4>
+            <p>Opening cash, cash collected, cash paid, closing variance audit.</p>
+          </a>
+          <a href="cafe-management.html#monthly" class="suite-card">
+            <span class="suite-icon">📈</span>
+            <h4>Monthly P&L</h4>
+            <p>Gross revenue, COGS, labor cost, prime cost, and net profit.</p>
+          </a>
+          <a href="cafe-management.html#audit" class="suite-card">
+            <span class="suite-icon">🔍</span>
+            <h4>Audit (Lines 1-24)</h4>
+            <p>Financial integrity verification and unexplained difference tracking.</p>
+          </a>
+          <a href="sales-dashboard.html" class="suite-card suite-card--highlight">
+            <span class="suite-icon">📈</span>
+            <h4>Visual Sales Dashboard</h4>
+            <p>Charts, 7-day revenue trend, top-selling items, category breakdown.</p>
+          </a>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ══ RESTOCK MODAL ════════════════════════════════════════════ -->
+  <div class="o-modal-overlay" id="restock-modal">
+    <div class="o-modal-card">
+      <div class="card-header-between">
+        <h3>📦 Quick Stock-In / Restock</h3>
+        <button class="o-modal-close" id="btn-close-restock">✕</button>
+      </div>
+      <form id="restock-form" class="restock-form">
+        <div class="form-group">
+          <label for="restock-ing">Select Ingredient *</label>
+          <select id="restock-ing" class="o-input" required>
+            <!-- Dynamic ingredients populated by JS -->
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="restock-qty">Quantity Added *</label>
+            <input type="number" id="restock-qty" class="o-input" placeholder="e.g. 10" min="0.1" step="any" required />
+          </div>
+          <div class="form-group">
+            <label for="restock-cost">Total Invoice Cost (₹) *</label>
+            <input type="number" id="restock-cost" class="o-input" placeholder="e.g. 500" min="0" step="any" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="restock-supplier">Supplier / Vendor</label>
+          <input type="text" id="restock-supplier" class="o-input" placeholder="e.g. Daily Fresh Dairy, Metro Wholesale" />
+        </div>
+        <button type="submit" class="o-btn-primary">Update Inventory →</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══ FLOATING DOCK ════════════════════════════════════════════ -->
+  <div class="panel-floating-dock" id="panel-dock">
+    <div class="dock-label">Window Panels:</div>
+    <a href="user-panel.html" class="dock-pill dock-pill--user">👤 Customer Panel</a>
+    <span class="dock-pill active">👑 Owner Portal</span>
+  </div>
+
+  <!-- ══ TOAST NOTIFICATION ═══════════════════════════════════════ -->
+  <div class="o-toast" id="o-toast" role="alert">
+    <span class="o-toast-icon">✓</span>
+    <span class="o-toast-msg" id="o-toast-msg">Operation completed!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./menu-data.js"></script>
+  <script src="./owner-panel.js"></script>
+</body>
+</html>

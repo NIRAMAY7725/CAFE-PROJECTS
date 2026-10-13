@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS - DAS CAFE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assistant-pos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="pos-layout">
+        <!-- Sidebar Navigation (Minimal) -->
+        <aside class="pos-sidebar">
+            <div class="pos-brand">
+                <img src="images/logo.png" alt="DAS CAFE" class="pos-logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23D4AF37\'/></svg>'">
+            </div>
+            <nav class="pos-nav">
+                <a href="index.html" class="nav-item">🏠 Home</a>
+                <a href="assistant-pos.html" class="nav-item active">🛒 POS</a>
+                <a href="sales-dashboard.html" class="nav-item">📊 Dashboard</a>
+            </nav>
+        </aside>
+
+        <!-- Main Items Area -->
+        <main class="pos-main">
+            <header class="pos-header">
+                <h2>Point of Sale</h2>
+                <div class="category-filters" id="pos-categories">
+                    <button class="cat-btn active" data-cat="all">All Items</button>
+                    <!-- Categories will be generated dynamically -->
+                </div>
+            </header>
+            
+            <div class="items-grid" id="pos-items-grid">
+                <!-- Items will be generated dynamically -->
+            </div>
+        </main>
+
+        <!-- Order Ticket (Right Side) -->
+        <aside class="pos-ticket">
+            <div class="ticket-header">
+                <h3>Current Order</h3>
+                <button id="clear-order" class="btn-clear">Clear</button>
+            </div>
+            
+            <div class="ticket-items" id="ticket-items-list">
+                <div class="empty-state">No items added</div>
+            </div>
+            
+            <div class="ticket-summary">
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="summary-line total-line">
+                    <span>Total</span>
+                    <span id="grand-total">₹0</span>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <label>Payment Method</label>
+                <div class="payment-methods" id="payment-methods">
+                    <button class="pay-btn active" data-method="cash">Cash</button>
+                    <button class="pay-btn" data-method="upi">UPI</button>
+                    <button class="pay-btn" data-method="card">Card</button>
+                </div>
+
+                <label>Customer Name</label>
+                <input type="text" id="customer-name" value="Walk-in" class="customer-input">
+                
+                <button id="complete-sale" class="btn-checkout" disabled>Complete Sale</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">Sale Completed!</div>
+
+    <script src="menu-data.js"></script>
+    <script src="assistant-pos.js"></script>
+</body>
+</html>
